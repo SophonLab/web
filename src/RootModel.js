@@ -2,6 +2,7 @@ import { types, getEnv, getSnapshot } from 'mobx-state-tree';
 import debug from 'debug';
 import { find } from 'lodash';
 import { getAttrFromHash } from './utils/hash';
+import IndexModel from './pages/index/IndexModel';
 
 const rootDebug = debug('web:model:root');
 
@@ -23,16 +24,16 @@ const Location = types
     hash: types.string
   });
 
-const GalleryPage = types
-  .model('GalleryPage', {
-  });
-
-const BlogPage = types
-  .model('BlogPage', {
+const HowPage = types
+  .model('HowPage', {
   });
 
 const AboutPage = types
   .model('AboutPage', {
+  });
+
+const PricingPage = types
+  .model('PricingPage', {
   });
 
 const NotFoundPage = types
@@ -41,30 +42,34 @@ const NotFoundPage = types
 
 const Pages = types
   .model('Pages', {
-    gallery: types.maybe(GalleryPage),
-    blog: types.maybe(BlogPage),
-    about: types.maybe(AboutPage),
-    notFound: types.maybe(NotFoundPage)
+    '/': types.maybe(IndexModel),
+    '/how': types.maybe(HowPage),
+    '/pricing': types.maybe(PricingPage),
+    '/about': types.maybe(AboutPage),
+    '/404': types.maybe(NotFoundPage)
   })
 
 const routeRules = [
   {
     pathname: '/',
-    page: 'gallery',
     setup() {
-      return GalleryPage.create();
+      return IndexModel.create();
     }
   },
   {
-    pathname: '/blog',
-    page: 'blog',
+    pathname: '/how',
     setup() {
-      return BlogPage.create();
+      return HowPage.create();
+    }
+  },
+  {
+    pathname: '/pricing',
+    setup() {
+      return PricingPage.create();
     }
   },
   {
     pathname: '/about',
-    page: 'about',
     setup() {
       return AboutPage.create();
     }
@@ -93,9 +98,9 @@ const RootModel = types
       return btoa(JSON.stringify(getSnapshot(self)));
     },
 
-    signInUrl() {
+    authUrl(type) {
       return (
-        `https://sophon-${self.config.stage}.auth.us-east-1.amazoncognito.com/login` +
+        `https://sophon-${self.config.stage}.auth.us-east-1.amazoncognito.com/${type}` +
         '?' +
         [
           `redirect_uri=https://sophon-web-${self.config.stage}.now.sh/in`,
@@ -104,6 +109,14 @@ const RootModel = types
           `state=${self.stateToBase64()}`
         ].join('&')
       );
+    },
+
+    signInUrl() {
+      return self.authUrl('login');
+    },
+
+    registerUrl() {
+      return self.authUrl('signup');
     }
   }))
   .actions(self => ({
@@ -160,13 +173,13 @@ const RootModel = types
 
         if (rule) {
           self.pages = Pages.create({
-            [rule.page]: rule.setup(newLocation)
+            [rule.pathname]: rule.setup(newLocation)
           });
         } else {
           rootDebug('Unknown Path Name');
 
           self.pages = Pages.create({
-            notFound: NotFoundPage.create()
+            '/404': NotFoundPage.create()
           });
         }
       }
