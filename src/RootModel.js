@@ -3,6 +3,11 @@ import debug from 'debug';
 import { find } from 'lodash';
 import { getAttrFromHash } from './utils/hash';
 import IndexModel from './pages/index/IndexModel';
+import BuildModel from './pages/build/BuildModel';
+import AboutModel from './pages/about/AboutModel';
+import HowModel from './pages/how/HowModel';
+import NotFoundModel from './pages/not-found/NotFoundModel';
+import PricingModel from './pages/pricing/PricingModel';
 import cases from './cases.json';
 
 const rootDebug = debug('web:model:root');
@@ -25,29 +30,14 @@ const Location = types
     hash: types.string
   });
 
-const HowPage = types
-  .model('HowPage', {
-  });
-
-const AboutPage = types
-  .model('AboutPage', {
-  });
-
-const PricingPage = types
-  .model('PricingPage', {
-  });
-
-const NotFoundPage = types
-  .model('NotFoundPage', {
-  });
-
 const Pages = types
   .model('Pages', {
     '/': types.maybe(IndexModel),
-    '/how': types.maybe(HowPage),
-    '/pricing': types.maybe(PricingPage),
-    '/about': types.maybe(AboutPage),
-    '/404': types.maybe(NotFoundPage)
+    '/how': types.maybe(HowModel),
+    '/build': types.maybe(BuildModel),
+    '/pricing': types.maybe(PricingModel),
+    '/about': types.maybe(AboutModel),
+    '/404': types.maybe(NotFoundModel)
   });
 
 const routeRules = [
@@ -60,19 +50,25 @@ const routeRules = [
   {
     pathname: '/how',
     setup() {
-      return HowPage.create();
+      return HowModel.create();
+    }
+  },
+  {
+    pathname: '/build',
+    setup() {
+      return BuildModel.create();
     }
   },
   {
     pathname: '/pricing',
     setup() {
-      return PricingPage.create();
+      return PricingModel.create();
     }
   },
   {
     pathname: '/about',
     setup() {
-      return AboutPage.create();
+      return AboutModel.create();
     }
   }
 ];
@@ -180,7 +176,7 @@ const RootModel = types
           rootDebug('Unknown Path Name');
 
           self.pages = Pages.create({
-            '/404': NotFoundPage.create()
+            '/404': NotFoundModel.create()
           });
         }
       }

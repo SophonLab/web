@@ -6,6 +6,7 @@ import IndexComponent from './pages/index/IndexComponent';
 import AboutComponent from './pages/about/AboutComponent';
 import PricingComponent from './pages/pricing/PricingComponent';
 import HowComponent from './pages/how/HowComponent';
+import BuildComponent from './pages/build/BuildComponent';
 import NotFoundComponent from './pages/not-found/NotFoundComponent';
 import { Layout } from 'antd';
 const { Content } = Layout;
@@ -15,6 +16,8 @@ const RenderContent = ({ model }) => {
     return <IndexComponent model={ model.pages['/'] } />;
   } else if (model.pages['/how']) {
     return <HowComponent model={ model.pages['/how'] } />;
+  } else if (model.pages['/build']) {
+    return <BuildComponent model={ model.pages['/build'] } />;
   } else if (model.pages['/pricing']) {
     return <PricingComponent model={ model.pages['/pricing'] } />;
   } else if (model.pages['/about']) {

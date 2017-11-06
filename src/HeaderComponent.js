@@ -10,10 +10,6 @@ const Logo = styled.a`
   font-family: Satisfy;
   font-size: 18px;
   transform: rotate(-7deg);
-  text-decoration: underline;
-  &:hover {
-    text-decoration: underline;
-  }
 `;
 
 const NavLinkL = styled.a`
@@ -61,6 +57,17 @@ const HeaderNav = ({ model }) => (
     </Col>
 
     <Col span={ 13 }>
+      <NavLinkL
+        key="build"
+        href="/build"
+        onClick={ (event) => {
+          event.preventDefault();
+          model.pushUrl('/build');
+        } }
+        style={ { fontWeight: '500', textDecoration: 'underline' } }
+      >
+        Build
+      </NavLinkL>
       <NavLinkL
         key="how"
         href="/how"
