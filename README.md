@@ -17,3 +17,7 @@ Sophon's website.
 ## Test
 
 Visit [https://sophon-web-dev.now.sh](https://sophon-web-dev.now.sh) to test.
+
+## References
+
+- We use [Ant Design](https://ant.design/components/) as our component library

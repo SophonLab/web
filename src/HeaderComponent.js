@@ -10,6 +10,10 @@ const Logo = styled.a`
   font-family: Satisfy;
   font-size: 18px;
   transform: rotate(-7deg);
+
+  &:focus {
+    text-decoration: none;
+  }
 `;
 
 const NavLinkL = styled.a`
@@ -18,6 +22,10 @@ const NavLinkL = styled.a`
   padding: 0 12px;
   font-size: 16px;
   float: left;
+
+  &:focus {
+    text-decoration: none;
+  }
 `;
 
 const NavLinkR = styled.a`
@@ -26,6 +34,10 @@ const NavLinkR = styled.a`
   padding: 0 12px;
   font-size: 16px;
   float: right;
+
+  &:focus {
+    text-decoration: none;
+  }
 `;
 
 const Slogan = styled.p`

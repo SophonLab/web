@@ -1,6 +1,6 @@
 import React from 'react';
-import { Section, SectionSlogan, SectionParagraph } from '../../elements';
-import { Col, Upload, Icon, message } from 'antd';
+import { Section, SectionSlogan } from '../../elements';
+import { Col, Upload, Icon } from 'antd';
 const Dragger = Upload.Dragger;
 
 export default ({ model }) => (

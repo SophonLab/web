@@ -14,6 +14,7 @@ export default ({ model }) => (
       <Col span={ 6 }>
         <img
           src="https://images-sophon.s3.amazonaws.com/uploads/content/image/2553/thumb400_img.jpg"
+          alt="Origin"
           style={ { width: '100%', height: 'auto' } }
         />
       </Col>
@@ -22,6 +23,7 @@ export default ({ model }) => (
       <Col span={ 6 }>
         <img
           src="https://images-sophon.s3.amazonaws.com/uploads/style/image/2/thumb200_img.jpg"
+          alt="Style"
           style={ { width: '100%', height: 'auto' } }
         />
       </Col>
@@ -30,6 +32,7 @@ export default ({ model }) => (
       <Col span={ 6 }>
         <img
           src="https://images-sophon.s3.amazonaws.com/uploads/pimage/imageurl/4371/thumb400_img171106023740a6df594674.jpg"
+          alt="Styled"
           style={ { width: '100%', height: 'auto' } }
         />
       </Col>

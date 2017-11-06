@@ -6,7 +6,7 @@ import Steps from './StepsComponent';
 export default ({ model }) => (
   <div>
     <Section>
-      <SectionSlogan>Turn any photo into an artwork – for free!</SectionSlogan>
+      <SectionSlogan>Turn any photo into an artwork</SectionSlogan>
       <SectionLead>We use an algorithm inspired by the human brain. It uses the stylistic elements of one image to draw the content of another. Get your own artwork in just three steps.</SectionLead>
 
       <Steps model={ model } />
