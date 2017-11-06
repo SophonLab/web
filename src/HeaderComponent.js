@@ -111,7 +111,7 @@ function headerStyle(showSlogan) {
   if (showSlogan) {
     return {
       width: '100%',
-      background: "url('./bg-slogan.jpg') no-repeat center center / cover",
+      background: "url('./header-bg.jpg') no-repeat center center / cover",
       height: '400px',
       padding: '0'
     };
@@ -129,7 +129,7 @@ export default ({ model, showSlogan = false }) => (
     {
       showSlogan &&
       <Row style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)', color: '#fff', minHeight: '334px' }}>
-        <Slogan>High resolution artwork <br /> transformed from your photo</Slogan>
+        <Slogan>High resolution artworks <br /> transformed from your photos</Slogan>
         <Lead>Repaint Ultra HD pictures in style of your favorite artists</Lead>
       </Row>
     }

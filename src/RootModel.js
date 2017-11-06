@@ -3,6 +3,7 @@ import debug from 'debug';
 import { find } from 'lodash';
 import { getAttrFromHash } from './utils/hash';
 import IndexModel from './pages/index/IndexModel';
+import cases from './cases.json';
 
 const rootDebug = debug('web:model:root');
 
@@ -47,13 +48,13 @@ const Pages = types
     '/pricing': types.maybe(PricingPage),
     '/about': types.maybe(AboutPage),
     '/404': types.maybe(NotFoundPage)
-  })
+  });
 
 const routeRules = [
   {
     pathname: '/',
     setup() {
-      return IndexModel.create();
+      return IndexModel.create({ cases });
     }
   },
   {
