@@ -2,6 +2,7 @@ import { types, getEnv, getSnapshot } from 'mobx-state-tree';
 import debug from 'debug';
 import { find } from 'lodash';
 import { getAttrFromHash } from './utils/hash';
+import { signInUrl, signOutUrl } from './utils/auth';
 import IndexModel from './pages/index/IndexModel';
 import BuildModel from './pages/build/BuildModel';
 import AboutModel from './pages/about/AboutModel';
@@ -9,6 +10,7 @@ import HowModel from './pages/how/HowModel';
 import NotFoundModel from './pages/not-found/NotFoundModel';
 import PricingModel from './pages/pricing/PricingModel';
 import cases from './cases.json';
+import { encode, decode } from 'base64url';
 
 const rootDebug = debug('web:model:root');
 
@@ -92,39 +94,60 @@ const RootModel = types
     },
 
     stateToBase64() {
-      return btoa(JSON.stringify(getSnapshot(self)));
-    },
-
-    authUrl(type) {
-      return (
-        `https://sophon-${self.config.stage}.auth.us-east-1.amazoncognito.com/${type}` +
-        '?' +
-        [
-          `redirect_uri=https://sophon-web-${self.config.stage}.now.sh/in`,
-          'response_type=token',
-          `client_id=${self.config.clientId}`,
-          `state=${self.stateToBase64()}`
-        ].join('&')
-      );
+      return encode(JSON.stringify(getSnapshot(self)));
     },
 
     signInUrl() {
-      return self.authUrl('login');
+      return signInUrl(self.config.stage, self.config.clientId, self.stateToBase64());
     },
 
     registerUrl() {
-      return self.authUrl('signup');
-    }
-  }))
-  .actions(self => ({
-    restoreFromBase64State(state) {
-      // const snapshot = JSON.parse(atob(state));
+      return signInUrl(self.config.stage, self.config.clientId, self.stateToBase64());
+    },
 
+    signOutUrl() {
+      return signOutUrl(self.config.stage, self.config.clientId);
     }
   }))
   .actions(self => ({
+    afterCreate() {
+      // restore token from local storage
+      if (localStorage && localStorage.getItem('accessToken')) {
+        self.setIdentity(localStorage.getItem('accessToken'));
+      }
+    },
+
     pushUrl(url, state = {}) {
       getEnv(self).history.push(url, state);
+    },
+
+    setIdentity(accessToken) {
+      self.identity = Identity.create({ accessToken });
+
+      if (localStorage) {
+        localStorage.setItem('accessToken', accessToken);
+      }
+    },
+
+    clearIdentity() {
+      self.identity = null;
+
+      if (localStorage) {
+        localStorage.removeItem('accessToken');
+      }
+    },
+
+    restoreFromBase64State(state) {
+      const snapshot = JSON.parse(decode(state));
+
+      if (snapshot) {
+        rootDebug('Restoring:', snapshot);
+
+        getEnv(self).history.replace(snapshot.location);
+
+        self.location = snapshot.location;
+        self.pages = snapshot.pages;
+      }
     },
 
     route(location) {
@@ -142,14 +165,14 @@ const RootModel = types
         rootDebug('SignIn with AccessToken:', accessToken);
 
         if (accessToken) {
-          self.identity = Identity.create({ accessToken });
+          self.setIdentity(accessToken);
 
           const state = getAttrFromHash(newLocation.hash, 'state');
 
           if (state) {
             rootDebug('Restoring State:', state);
 
-            // TODO
+            self.restoreFromBase64State(state);
           } else {
             rootDebug('Missing State');
 
@@ -163,7 +186,7 @@ const RootModel = types
       } else if (location.pathname === '/out') {
         rootDebug('Clean Up Identity');
 
-        self.identity = null;
+        self.clearIdentity();
         self.pushUrl('/');
       } else if (newLocation) {
         const rule = findRoute(routeRules, newLocation);

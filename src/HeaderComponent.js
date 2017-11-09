@@ -113,15 +113,20 @@ const HeaderNav = ({ model }) => (
     </Col>
 
     {
-      !model.hasIdentity() &&
-      <Col span={ 8 } style={ { textAlign: 'right' } }>
-        <NavLinkR key="signin" href={ model.signInUrl() }>
-          Sign In
-        </NavLinkR>
-        <NavLinkR key="register" href={ model.registerUrl() }>
-          Register
-        </NavLinkR>
-      </Col>
+      model.hasIdentity() ?
+        <Col span={ 8 } style={ { textAlign: 'right' } }>
+          <NavLinkR key="logout" href={ model.signOutUrl() }>
+            Log Out
+          </NavLinkR>
+        </Col> :
+        <Col span={ 8 } style={ { textAlign: 'right' } }>
+          <NavLinkR key="signin" href={ model.signInUrl() }>
+            Sign In
+          </NavLinkR>
+          <NavLinkR key="register" href={ model.registerUrl() }>
+            Register
+          </NavLinkR>
+        </Col>
     }
   </Row>
 );

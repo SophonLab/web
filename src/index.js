@@ -12,7 +12,7 @@ const historyDebug = debug('web:history');
 const model = RootModel.create({
   config: {
     stage: 'dev',
-    clientId: '46e9v2cr3ona9412mdc5488vdq'
+    clientId: 'phMSpc6uBLJan39hueeMSbIJIJuJFIr0'
   }
 }, {
   history

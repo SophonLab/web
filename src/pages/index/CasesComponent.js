@@ -4,8 +4,8 @@ import { Row, Col } from 'antd';
 export const Cases = Row;
 
 export const Case = ({ styled, origin, style }) => (
-  <Col span={ 8 } style={ { marginBottom: '1.5em', paddingRight: '1em' } }>
-    <Row>
+  <Col key={ styled } span={ 8 } style={ { marginBottom: '1.5em', paddingRight: '1em' } }>
+    <Row key="styled">
       <Col span={ 24 }>
         <img
           src={ styled }
@@ -14,7 +14,7 @@ export const Case = ({ styled, origin, style }) => (
         />
       </Col>
     </Row>
-    <Row>
+    <Row key="origin">
       <Col span={ 12 } style={ { paddingRight: '.3em' } }>
         <img
           src={ origin }
