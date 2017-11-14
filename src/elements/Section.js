@@ -5,7 +5,7 @@ export default (props) => (
   <Row
     { ...props }
     style={{
-      padding: '25px 50px',
+      padding: '2em 4em',
       ...props.style
     }}
   />
