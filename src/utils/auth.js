@@ -14,6 +14,7 @@ export function signInUrl(stage, clientId, state) {
   return (
     `https://${AUTH0_TENANT_NAME}.auth0.com/login?` +
     [
+      `scope=openid%20profile%20email`,
       `redirect_uri=https://${getDomain(stage)}.now.sh/in`,
       'response_type=token',
       `client=${clientId}`,

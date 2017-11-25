@@ -1,7 +1,8 @@
 import React from 'react';
-import { Section, SectionSlogan, SectionLead } from '../../elements';
+import { Section, SectionSlogan, SectionLead, SectionParagraph } from '../../elements';
 import { Cases, Case } from './CasesComponent';
 import Steps from './StepsComponent';
+import Resolutions from './ResolutionsComponent';
 
 export default ({ model }) => (
   <div>
@@ -12,15 +13,26 @@ export default ({ model }) => (
       <Steps model={ model } />
     </Section>
     <Section style={{ background: '#ececec' }}>
+      <SectionSlogan>High Resolution File</SectionSlogan>
+      <SectionLead>Do with it whatever you want.</SectionLead>
+
+      <SectionParagraph>
+        Get a high-resolution image file for personal use. Whether you print it on a t-shirt, canvas or just use it as your screen background – it's entirely up to you. In addition to the free standard images, we offer two different sizes of HD images.
+      </SectionParagraph>
+
+      <Resolutions model={ model } />
+    </Section>
+    <Section>
       <SectionSlogan>Get some inspiration</SectionSlogan>
       <SectionLead>See what others have created. Our users' gallery is updated on a daily basis.</SectionLead>
       <Cases style={ { marginTop: '1.5em' } }>
         { model.cases.map(Case) }
       </Cases>
     </Section>
-    <Section>
-      <SectionSlogan>Follow us</SectionSlogan>
-      <SectionLead>Get news from the world of art and science and recieve the best PhotoPaints.</SectionLead>
-    </Section>
   </div>
 );
+
+// <Section>
+//   <SectionSlogan>Follow us</SectionSlogan>
+//   <SectionLead>Get news from the world of art and science and recieve the best PhotoPaints.</SectionLead>
+// </Section>
