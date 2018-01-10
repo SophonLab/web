@@ -1,12 +1,9 @@
 import styled from 'styled-components';
-import { media } from '../utils/css';
 
 const SectionLead = styled.p`
-  font-size: 2em;
-
-  ${media.phone`
-    font-size: 1.5em;
-  `}
+  font-size: 1.5em;
+  font-weight: 300;
+  margin-bottom: 1.8em;
 `;
 
 export default SectionLead;

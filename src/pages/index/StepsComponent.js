@@ -16,17 +16,34 @@ const Steps = styled.div`
 const Step = styled.div`
   height: 15em;
   flex: 1 auto;
+
+  ${media.giant`
+    height: 36em;
+  `}
+
+  ${media.desktop`
+    height: 27em;
+  `}
 `;
 
 const StepTitle = styled.div`
   line-height: 2em;
   height: 2em;
   font-size: 2em;
+  font-weight: 300;
 `;
 
 const StepImage = styled.img`
   height: 12em;
   overflow: hidden;
+
+  ${media.giant`
+    height: 33em;
+  `}
+
+  ${media.desktop`
+    height: 24em;
+  `}
 `;
 
 export default ({ model }) => (
