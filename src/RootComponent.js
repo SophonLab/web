@@ -36,7 +36,7 @@ export default observer(({ model }) => {
       <Content style={ { background: '#fff' } }>
         <RenderContent model={ model } />
       </Content>
-      <Footer />
+      <Footer identity={ model.identity } />
     </Layout>
   );
 });
