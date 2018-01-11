@@ -1,6 +1,7 @@
 import React from "react";
 import { Button, Row, Col } from "antd";
 import styled from "styled-components";
+import { media } from "../../utils/css";
 
 const BgImage = styled.img`
   width: 100%;
@@ -16,17 +17,22 @@ const ZoomImage = styled.img`
 `;
 
 const CardHeader = styled.div`
-  padding: 0 24px;
   text-align: center;
-  font-size: 28px;
+  font-size: 2em;
   color: #fff;
 `;
 
 const CardBody = styled.div`
-  padding: 24px;
+  padding: 2em;
   background: #fff;
-  line-height: 32px;
+  line-height: 2.5em;
+  min-height: 11em;
   text-align: center;
+
+  ${media.phone`
+    display: none;
+  `};
+  
 `;
 
 export default ({ model }) => (

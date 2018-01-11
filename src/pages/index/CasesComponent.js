@@ -7,7 +7,7 @@ export const Case = ({ styled, origin, style }) => (
   <Col
     key={styled}
     span={8}
-    style={{ marginBottom: "1.5em", paddingRight: "1em" }}
+    style={{ marginBottom: "1.5em", paddingRight: "1em", minWidth: "20em" }}
   >
     <Row key="styled">
       <Col span={24}>
