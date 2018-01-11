@@ -43,31 +43,54 @@ export default ({ model }) => (
       <SectionSlogan>Pricing</SectionSlogan>
       <SectionLead>More options for professionals.</SectionLead>
       <Row style={{ marginTop: "1em" }}>
-        <Col span={8} style={{ paddingRight: "1em" }}>
-          <Card title="Free" bordered>
-            <p>Render art works (500*500)</p>
+        <Col
+          span={8}
+          style={{
+            paddingRight: "1.5em",
+            minWidth: "20em",
+            marginBottom: "1em"
+          }}
+        >
+          <Card title="Free" bordered style={{ minHeight: "24em" }}>
+            <p>Render small art works (500*500)</p>
             <p>&nbsp;</p>
             <p>&nbsp;</p>
             <p>&nbsp;</p>
             <Price>Free</Price>
           </Card>
         </Col>
-        <Col span={8} style={{ paddingLeft: ".5em", paddingRight: ".5em" }}>
-          <Card title="Pro" bordered>
+        <Col
+          span={8}
+          style={{
+            paddingRight: "1.5em",
+            minWidth: "20em",
+            marginBottom: "1em"
+          }}
+        >
+          <Card title="Pro" bordered style={{ minHeight: "24em" }}>
             <p>All features of Free</p>
             <p>Render UHD art works</p>
-            <p>Access to desktop app for convenient file access</p>
+            <p>Access to sophon desktop app for convenient batch transforms</p>
             <p>&nbsp;</p>
-            <Price>$19/month</Price>
+            <Price>Contact Us</Price>
           </Card>
         </Col>
-        <Col span={8} style={{ paddingLeft: "1em" }}>
-          <Card title="Master" bordered>
+        <Col
+          span={8}
+          style={{
+            paddingRight: "1.5em",
+            minWidth: "20em",
+            marginBottom: "1em"
+          }}
+        >
+          <Card title="Master" bordered style={{ minHeight: "24em" }}>
             <p>All features of Pro</p>
+            <p>
+              Access to <strong>Deep Transform</strong>
+            </p>
             <p>Render 8K art works</p>
-            <p>Tune art works with custom parameters</p>
             <p>&nbsp;</p>
-            <Price>$99/month</Price>
+            <Price>Contact Us</Price>
           </Card>
         </Col>
       </Row>

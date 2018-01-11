@@ -6,7 +6,7 @@ const Dragger = Upload.Dragger;
 export default ({ model }) => (
   <div>
     <Section>
-      <Col span={11}>
+      <Col span={11} style={{ minWidth: "20em", marginBottom: "2em" }}>
         <SectionSlogan>Photo</SectionSlogan>
         <Dragger>
           <p className="ant-upload-drag-icon">
@@ -21,7 +21,7 @@ export default ({ model }) => (
         </Dragger>
       </Col>
       <Col span={2} />
-      <Col span={11}>
+      <Col span={11} style={{ minWidth: "20em", marginBottom: "2em" }}>
         <SectionSlogan>Style</SectionSlogan>
         <Dragger>
           <p className="ant-upload-drag-icon">

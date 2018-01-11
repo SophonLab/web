@@ -10,5 +10,8 @@ export default ({ identity }) => (
       </p>
     )}
     ©2017 Sophon LLC.
+    <p>
+      <a href="photopaint.us@gmail.com">photopaint.us@gmail.com</a>
+    </p>
   </Footer>
 );

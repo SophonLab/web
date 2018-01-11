@@ -5,10 +5,16 @@ export default ({ model }) => (
   <Section>
     <SectionSlogan>About</SectionSlogan>
     <SectionParagraph>
-      Our mission is to provide a novel artistic painting tool that allows
-      everyone to create and share artistic pictures with just a few clicks. All
-      you need to do is upload a photo and choose your favorite style. Our
-      servers will then render your artwork for you.
+      Our mission is to provide a user friendly painting tool that allows
+      everyone to create quality artworks that satisfying themselves.
+    </SectionParagraph>
+    <SectionParagraph>
+      Other than the freely available Fast Transform tool, we're glad to assist
+      your customization needs.
+    </SectionParagraph>
+    <SectionParagraph>
+      Any question please feel free to contact us at{" "}
+      <a href="photopaint.us@gmail.com">photopaint.us@gmail.com</a>
     </SectionParagraph>
   </Section>
 );

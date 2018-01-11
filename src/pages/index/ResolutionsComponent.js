@@ -32,7 +32,6 @@ const CardBody = styled.div`
   ${media.phone`
     display: none;
   `};
-  
 `;
 
 export default ({ model }) => (
