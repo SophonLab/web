@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { media } from '../utils/css';
+import styled from "styled-components";
+import { media } from "../utils/css";
 
 const SectionSlogan = styled.p`
   font-weight: 200;
@@ -8,7 +8,7 @@ const SectionSlogan = styled.p`
 
   ${media.phone`
     font-size: 2em;
-  `}
+  `};
 `;
 
 export default SectionSlogan;

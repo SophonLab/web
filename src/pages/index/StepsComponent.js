@@ -1,7 +1,7 @@
-import React from 'react';
-import styled from 'styled-components';
-import { media } from '../../utils/css';
-import { Row, Button } from 'antd';
+import React from "react";
+import styled from "styled-components";
+import { media } from "../../utils/css";
+import { Row, Button } from "antd";
 
 const Steps = styled.div`
   display: flex;
@@ -10,7 +10,7 @@ const Steps = styled.div`
 
   ${media.phone`
     flex-direction: column;
-  `}
+  `};
 `;
 
 const Step = styled.div`
@@ -19,11 +19,9 @@ const Step = styled.div`
 
   ${media.giant`
     height: 36em;
-  `}
-
-  ${media.desktop`
+  `} ${media.desktop`
     height: 27em;
-  `}
+  `};
 `;
 
 const StepTitle = styled.div`
@@ -39,11 +37,9 @@ const StepImage = styled.img`
 
   ${media.giant`
     height: 33em;
-  `}
-
-  ${media.desktop`
+  `} ${media.desktop`
     height: 24em;
-  `}
+  `};
 `;
 
 export default ({ model }) => (
@@ -74,14 +70,14 @@ export default ({ model }) => (
       </Step>
     </Steps>
 
-    <Row style={ { marginTop: '1.5em' } }>
+    <Row style={{ marginTop: "1.5em" }}>
       <Button
         type="primary"
         size="large"
-        onClick={ (event) => {
+        onClick={event => {
           event.preventDefault();
-          model.pushUrl('/build');
-        } }
+          model.pushUrl("/build");
+        }}
       >
         Try it Now
       </Button>

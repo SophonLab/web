@@ -1,10 +1,10 @@
-const AUTH0_TENANT_NAME = 'sophon';
+const AUTH0_TENANT_NAME = "sophon";
 
 function getDomain(stage) {
-  let domain = 'sophon-web';
+  let domain = "sophon-web";
 
-  if (stage !== 'prd') {
-    domain = domain + '-' + stage;
+  if (stage !== "prd") {
+    domain = domain + "-" + stage;
   }
 
   return domain;
@@ -16,10 +16,10 @@ export function signInUrl(stage, clientId, state) {
     [
       `scope=openid%20profile%20email`,
       `redirect_uri=https://${getDomain(stage)}.now.sh/in`,
-      'response_type=token',
+      "response_type=token",
       `client=${clientId}`,
       `state=${state}`
-    ].join('&')
+    ].join("&")
   );
 }
 
@@ -29,6 +29,6 @@ export function signOutUrl(stage, clientId) {
     [
       `client_id=${clientId}`,
       `returnTo=https://${getDomain(stage)}.now.sh/out`
-    ].join('&')
+    ].join("&")
   );
 }

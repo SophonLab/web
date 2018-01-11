@@ -1,5 +1,5 @@
-import React from 'react';
-import { Section, SectionSlogan, SectionParagraph } from '../../elements';
+import React from "react";
+import { Section, SectionSlogan, SectionParagraph } from "../../elements";
 
 export default ({ model }) => (
   <Section>

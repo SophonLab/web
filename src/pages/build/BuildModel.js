@@ -1,7 +1,5 @@
-import { types } from 'mobx-state-tree';
+import { types } from "mobx-state-tree";
 
-const BuildModel = types
-  .model('BuildModel', {
-  });
+const BuildModel = types.model("BuildModel", {});
 
 export default BuildModel;

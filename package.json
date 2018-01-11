@@ -55,10 +55,12 @@
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
-    "test": "node scripts/test.js --env=jsdom"
+    "test": "node scripts/test.js --env=jsdom",
+    "format": "prettier --write \"src/**/*.{js,json}\""
   },
   "devDependencies": {
-    "mobx-react-devtools": "^4.2.15"
+    "mobx-react-devtools": "^4.2.15",
+    "prettier": "1.10.2"
   },
   "jest": {
     "collectCoverageFrom": [

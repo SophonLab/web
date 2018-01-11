@@ -1,11 +1,11 @@
-import React from 'react';
-import { Row } from 'antd';
+import React from "react";
+import { Row } from "antd";
 
-export default (props) => (
+export default props => (
   <Row
-    { ...props }
+    {...props}
     style={{
-      padding: '2em 4em',
+      padding: "2em 4em",
       ...props.style
     }}
   />

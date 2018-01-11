@@ -1,5 +1,5 @@
 // these sizes are arbitrary and you can set them to whatever you wish
-import { css } from 'styled-components'
+import { css } from "styled-components";
 
 const sizes = {
   giant: 1170,
@@ -15,7 +15,7 @@ export const media = Object.keys(sizes).reduce((accumulator, label) => {
   const emSize = sizes[label] / 12;
   accumulator[label] = (...args) => css`
     @media (max-width: ${emSize}em) {
-      ${css(...args)}
+      ${css(...args)};
     }
   `;
   return accumulator;

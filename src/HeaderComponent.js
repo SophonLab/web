@@ -1,12 +1,12 @@
-import React from 'react';
-import styled from 'styled-components';
-import { media } from './utils/css';
+import React from "react";
+import styled from "styled-components";
+import { media } from "./utils/css";
 
 const Header = styled.div`
   width: 100%;
   padding: 0;
   line-height: 5em;
-  background: url('./header-bg.jpg') no-repeat center center / cover;
+  background: url("./header-bg.jpg") no-repeat center center / cover;
 `;
 
 const Logo = styled.a`
@@ -23,7 +23,7 @@ const Logo = styled.a`
   ${media.phone`
     font-size: 1.2em;
     flex: 1 100%;
-  `}
+  `};
 `;
 
 const NavLink = styled.a`
@@ -39,7 +39,7 @@ const NavLink = styled.a`
   ${media.phone`
     flex: 1 100%;
     padding: 0;
-  `}
+  `};
 `;
 
 const SloganWrap = styled.div`
@@ -58,11 +58,9 @@ const Slogan = styled.p`
   ${media.tablet`
     font-size: 4em;
     padding-top: 1em;
-  `}
-
-  ${media.phone`
+  `} ${media.phone`
     font-size: 1.8em;
-  `}
+  `};
 `;
 
 const Lead = styled.p`
@@ -73,11 +71,9 @@ const Lead = styled.p`
 
   ${media.tablet`
     font-size: 2em;
-  `}
-
-  ${media.phone`
+  `} ${media.phone`
     font-size: 1.3em;
-  `}
+  `};
 `;
 
 const HeaderNavWrap = styled.div`
@@ -91,10 +87,10 @@ const HeaderNav = ({ model }) => (
   <HeaderNavWrap>
     <Logo
       href="/"
-      onClick={ (event) => {
+      onClick={event => {
         event.preventDefault();
-        model.pushUrl('/');
-      } }
+        model.pushUrl("/");
+      }}
     >
       PhotoPaint
     </Logo>
@@ -102,66 +98,64 @@ const HeaderNav = ({ model }) => (
     <NavLink
       key="build"
       href="/build"
-      onClick={ (event) => {
+      onClick={event => {
         event.preventDefault();
-        model.pushUrl('/build');
-      } }
-      style={ { fontWeight: '500', textDecoration: 'underline' } }
+        model.pushUrl("/build");
+      }}
+      style={{ fontWeight: "500", textDecoration: "underline" }}
     >
       Build
     </NavLink>
     <NavLink
       key="how"
       href="/how"
-      onClick={ (event) => {
+      onClick={event => {
         event.preventDefault();
-        model.pushUrl('/how');
-      } }
+        model.pushUrl("/how");
+      }}
     >
       How it works
     </NavLink>
     <NavLink
       key="pricing"
       href="/pricing"
-      onClick={ (event) => {
+      onClick={event => {
         event.preventDefault();
-        model.pushUrl('/pricing');
-      } }
+        model.pushUrl("/pricing");
+      }}
     >
       Pricing
     </NavLink>
     <NavLink
       key="about"
       href="/about"
-      onClick={ (event) => {
+      onClick={event => {
         event.preventDefault();
-        model.pushUrl('/about');
-      } }
+        model.pushUrl("/about");
+      }}
     >
       About
     </NavLink>
-    {
-      model.hasIdentity() ?
-        <NavLink key="logout" right href={ model.signOutUrl() }>
-          Log Out
-        </NavLink>
-        :
-        <NavLink key="signin" right href={ model.signInUrl() }>
-          Sign In / Register
-        </NavLink>
-    }
+    {model.hasIdentity() ? (
+      <NavLink key="logout" right href={model.signOutUrl()}>
+        Log Out
+      </NavLink>
+    ) : (
+      <NavLink key="signin" right href={model.signInUrl()}>
+        Sign In / Register
+      </NavLink>
+    )}
   </HeaderNavWrap>
 );
 
 export default ({ model, showSlogan = false }) => (
   <Header>
-    <HeaderNav model={ model } />
-    {
-      showSlogan &&
+    <HeaderNav model={model} />
+    {showSlogan && (
       <SloganWrap>
         <Slogan>High resolution artworks transformed from your photos</Slogan>
         <Lead>Repaint Ultra HD pictures in style of your favorite artists</Lead>
       </SloganWrap>
-    }
+    )}
   </Header>
 );

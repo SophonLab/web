@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const SectionLead = styled.p`
   font-size: 1.5em;

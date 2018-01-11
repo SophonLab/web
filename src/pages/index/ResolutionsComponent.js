@@ -1,6 +1,6 @@
-import React from 'react';
-import { Button, Row, Col } from 'antd';
-import styled from 'styled-components';
+import React from "react";
+import { Button, Row, Col } from "antd";
+import styled from "styled-components";
 
 const BgImage = styled.img`
   width: 100%;
@@ -30,14 +30,17 @@ const CardBody = styled.div`
 `;
 
 export default ({ model }) => (
-  <div style={ { marginTop: '1em' } }>
+  <div style={{ marginTop: "1em" }}>
     <Row>
-      <Col span={ 24 }>
+      <Col span={24}>
         <BgImage src="./resolution-bg.jpg" />
       </Col>
     </Row>
     <Row>
-      <Col span={ 8 } style={ { background: '#008000', borderRight: '4px solid #ececec' } }>
+      <Col
+        span={8}
+        style={{ background: "#008000", borderRight: "4px solid #ececec" }}
+      >
         <ZoomImage src="./resolution-1k.jpg" />
         <CardHeader>1K</CardHeader>
         <CardBody>
@@ -46,24 +49,34 @@ export default ({ model }) => (
             <Button
               type="primary"
               size="small"
-              onClick={ (event) => {
+              onClick={event => {
                 event.preventDefault();
-                model.pushUrl('/build');
-              } }
+                model.pushUrl("/build");
+              }}
             >
               Try it Now
             </Button>
           </p>
         </CardBody>
       </Col>
-      <Col span={ 8 } style={ { background: '#005b8c', borderLeft: '2px solid #ececec', borderRight: '2px solid #ececec' } }>
+      <Col
+        span={8}
+        style={{
+          background: "#005b8c",
+          borderLeft: "2px solid #ececec",
+          borderRight: "2px solid #ececec"
+        }}
+      >
         <ZoomImage src="./resolution-2k.jpg" />
         <CardHeader>2K</CardHeader>
         <CardBody>
           <p>Contact Us</p>
         </CardBody>
       </Col>
-      <Col span={ 8 } style={ { background: '#8B0000', borderLeft: '4px solid #ececec' } }>
+      <Col
+        span={8}
+        style={{ background: "#8B0000", borderLeft: "4px solid #ececec" }}
+      >
         <ZoomImage src="./resolution-8k.jpg" />
         <CardHeader>8K</CardHeader>
         <CardBody>

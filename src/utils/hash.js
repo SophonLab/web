@@ -1,15 +1,13 @@
-import { find, startsWith } from 'lodash';
+import { find, startsWith } from "lodash";
 
 export function getAttrFromHash(hash, attribute) {
   if (hash.length < 2) {
     return null;
   }
 
-  const attrs = hash.substring(1).split('&');
+  const attrs = hash.substring(1).split("&");
 
-  const attr = find(attrs, a => (
-    startsWith(a, attribute + '=')
-  ));
+  const attr = find(attrs, a => startsWith(a, attribute + "="));
 
   if (attr) {
     return attr.substring(attribute.length + 1);

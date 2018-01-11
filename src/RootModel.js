@@ -1,74 +1,70 @@
-import { types, getEnv, getSnapshot } from 'mobx-state-tree';
-import debug from 'debug';
-import { find } from 'lodash';
-import { getAttrFromHash } from './utils/hash';
-import { signInUrl, signOutUrl } from './utils/auth';
-import IndexModel from './pages/index/IndexModel';
-import BuildModel from './pages/build/BuildModel';
-import AboutModel from './pages/about/AboutModel';
-import HowModel from './pages/how/HowModel';
-import NotFoundModel from './pages/not-found/NotFoundModel';
-import PricingModel from './pages/pricing/PricingModel';
-import cases from './cases.json';
-import { encode, decode } from 'base64url';
+import { types, getEnv, getSnapshot } from "mobx-state-tree";
+import debug from "debug";
+import { find } from "lodash";
+import { getAttrFromHash } from "./utils/hash";
+import { signInUrl, signOutUrl } from "./utils/auth";
+import IndexModel from "./pages/index/IndexModel";
+import BuildModel from "./pages/build/BuildModel";
+import AboutModel from "./pages/about/AboutModel";
+import HowModel from "./pages/how/HowModel";
+import NotFoundModel from "./pages/not-found/NotFoundModel";
+import PricingModel from "./pages/pricing/PricingModel";
+import cases from "./cases.json";
+import { encode, decode } from "base64url";
 
-const rootDebug = debug('web:model:root');
+const rootDebug = debug("web:model:root");
 
-const Identity = types
-  .model('Identity', {
-    accessToken: types.string
-  });
+const Identity = types.model("Identity", {
+  accessToken: types.string
+});
 
-const Config = types
-  .model('Config', {
-    stage: types.string,
-    clientId: types.string
-  });
+const Config = types.model("Config", {
+  stage: types.string,
+  clientId: types.string
+});
 
-const Location = types
-  .model('Location', {
-    pathname: types.string,
-    search: types.string,
-    hash: types.string
-  });
+const Location = types.model("Location", {
+  pathname: types.string,
+  search: types.string,
+  hash: types.string
+});
 
-const Pages = types
-  .model('Pages', {
-    '/': types.maybe(IndexModel),
-    '/how': types.maybe(HowModel),
-    '/build': types.maybe(BuildModel),
-    '/pricing': types.maybe(PricingModel),
-    '/about': types.maybe(AboutModel),
-    '/404': types.maybe(NotFoundModel)
-  });
+const Pages = types.model("Pages", {
+  "/": types.maybe(IndexModel),
+  "/how": types.maybe(HowModel),
+  "/build": types.maybe(BuildModel),
+  "/pricing": types.maybe(PricingModel),
+  "/about": types.maybe(AboutModel),
+  "/404": types.maybe(NotFoundModel)
+});
 
 const routeRules = [
   {
-    pathname: '/',
+    pathname: "/",
     setup() {
       return IndexModel.create({ cases });
     }
   },
   {
-    pathname: '/how',
+    pathname: "/how",
     setup() {
       return HowModel.create();
     }
   },
   {
-    pathname: '/build',
+    pathname: "/build",
     setup() {
       return BuildModel.create();
     }
   },
   {
-    pathname: '/pricing',
+    pathname: "/pricing",
     setup() {
       return PricingModel.create();
     }
   },
   {
-    pathname: '/about',
+    pathname: "/about",
     setup() {
       return AboutModel.create();
     }
@@ -82,7 +78,7 @@ function findRoute(rules, location) {
 }
 
 const RootModel = types
-  .model('Root', {
+  .model("Root", {
     identity: types.maybe(Identity),
     config: Config,
     location: types.maybe(Location),
@@ -98,11 +94,19 @@ const RootModel = types
     },
 
     signInUrl() {
-      return signInUrl(self.config.stage, self.config.clientId, self.stateToBase64());
+      return signInUrl(
+        self.config.stage,
+        self.config.clientId,
+        self.stateToBase64()
+      );
     },
 
     registerUrl() {
-      return signInUrl(self.config.stage, self.config.clientId, self.stateToBase64());
+      return signInUrl(
+        self.config.stage,
+        self.config.clientId,
+        self.stateToBase64()
+      );
     },
 
     signOutUrl() {
@@ -112,8 +116,8 @@ const RootModel = types
   .actions(self => ({
     afterCreate() {
       // restore token from local storage
-      if (localStorage && localStorage.getItem('accessToken')) {
-        self.setIdentity(localStorage.getItem('accessToken'));
+      if (localStorage && localStorage.getItem("accessToken")) {
+        self.setIdentity(localStorage.getItem("accessToken"));
       }
     },
 
@@ -125,7 +129,7 @@ const RootModel = types
       self.identity = Identity.create({ accessToken });
 
       if (localStorage) {
-        localStorage.setItem('accessToken', accessToken);
+        localStorage.setItem("accessToken", accessToken);
       }
     },
 
@@ -133,7 +137,7 @@ const RootModel = types
       self.identity = null;
 
       if (localStorage) {
-        localStorage.removeItem('accessToken');
+        localStorage.removeItem("accessToken");
       }
     },
 
@@ -141,7 +145,7 @@ const RootModel = types
       const snapshot = JSON.parse(decode(state));
 
       if (snapshot) {
-        rootDebug('Restoring:', snapshot);
+        rootDebug("Restoring:", snapshot);
 
         getEnv(self).history.replace(snapshot.location);
 
@@ -151,7 +155,7 @@ const RootModel = types
     },
 
     route(location) {
-      rootDebug('Route to:', location);
+      rootDebug("Route to:", location);
 
       const newLocation = Location.create({
         pathname: location.pathname,
@@ -159,35 +163,35 @@ const RootModel = types
         hash: location.hash
       });
 
-      if (location.pathname === '/in') {
-        const accessToken = getAttrFromHash(newLocation.hash, 'access_token');
+      if (location.pathname === "/in") {
+        const accessToken = getAttrFromHash(newLocation.hash, "access_token");
 
-        rootDebug('SignIn with AccessToken:', accessToken);
+        rootDebug("SignIn with AccessToken:", accessToken);
 
         if (accessToken) {
           self.setIdentity(accessToken);
 
-          const state = getAttrFromHash(newLocation.hash, 'state');
+          const state = getAttrFromHash(newLocation.hash, "state");
 
           if (state) {
-            rootDebug('Restoring State:', state);
+            rootDebug("Restoring State:", state);
 
             self.restoreFromBase64State(state);
           } else {
-            rootDebug('Missing State');
+            rootDebug("Missing State");
 
-            self.pushUrl('/');
+            self.pushUrl("/");
           }
         } else {
-          rootDebug('Missing Access Token');
+          rootDebug("Missing Access Token");
 
-          self.pushUrl('/');
+          self.pushUrl("/");
         }
-      } else if (location.pathname === '/out') {
-        rootDebug('Clean Up Identity');
+      } else if (location.pathname === "/out") {
+        rootDebug("Clean Up Identity");
 
         self.clearIdentity();
-        self.pushUrl('/');
+        self.pushUrl("/");
       } else if (newLocation) {
         const rule = findRoute(routeRules, newLocation);
 
@@ -196,15 +200,15 @@ const RootModel = types
             [rule.pathname]: rule.setup(newLocation)
           });
         } else {
-          rootDebug('Unknown Path Name');
+          rootDebug("Unknown Path Name");
 
           self.pages = Pages.create({
-            '/404': NotFoundModel.create()
+            "/404": NotFoundModel.create()
           });
         }
-      }
 
-      self.location = newLocation;
+        self.location = newLocation;
+      }
     }
   }));
 
