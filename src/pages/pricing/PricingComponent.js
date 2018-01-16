@@ -67,7 +67,7 @@ export default ({ model }) => (
             marginBottom: "1em"
           }}
         >
-          <Card title="Pro" bordered style={{ minHeight: "24em" }}>
+          <Card title="Standard" bordered style={{ minHeight: "24em" }}>
             <p>All features of Free</p>
             <p>Render UHD art works</p>
             <p>Access to sophon desktop app for convenient batch transforms</p>
@@ -83,7 +83,7 @@ export default ({ model }) => (
             marginBottom: "1em"
           }}
         >
-          <Card title="Master" bordered style={{ minHeight: "24em" }}>
+          <Card title="Pro" bordered style={{ minHeight: "24em" }}>
             <p>All features of Pro</p>
             <p>
               Access to <strong>Deep Transform</strong>

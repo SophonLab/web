@@ -34,18 +34,10 @@ const StepTitle = styled.div`
 `;
 
 const StepImage = styled.img`
-  height: 12em;
+  height: 24em;
   overflow: hidden;
 
-  ${media.giant`
-    height: 33em;
-  `};
-
   ${media.desktop`
-    height: 24em;
-  `};
-
-  ${media.phone`
     height: 19em;
   `};
 `;
