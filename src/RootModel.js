@@ -19,7 +19,6 @@ const Identity = types.model("Identity", {
 });
 
 const Config = types.model("Config", {
-  stage: types.string,
   clientId: types.string
 });
 
@@ -95,7 +94,6 @@ const RootModel = types
 
     signInUrl() {
       return signInUrl(
-        self.config.stage,
         self.config.clientId,
         self.stateToBase64()
       );
@@ -103,14 +101,13 @@ const RootModel = types
 
     registerUrl() {
       return signInUrl(
-        self.config.stage,
         self.config.clientId,
         self.stateToBase64()
       );
     },
 
     signOutUrl() {
-      return signOutUrl(self.config.stage, self.config.clientId);
+      return signOutUrl(self.config.clientId);
     }
   }))
   .actions(self => ({
