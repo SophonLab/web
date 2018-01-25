@@ -1,6 +1,6 @@
 {
   "name": "web",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "dependencies": {
     "antd": "^3.1.1",
@@ -43,6 +43,7 @@
     "react": "^16.0.0",
     "react-dev-utils": "^4.2.1",
     "react-dom": "^16.0.0",
+    "serve": "^6.4.8",
     "style-loader": "0.19.0",
     "styled-components": "^2.2.3",
     "sw-precache-webpack-plugin": "0.11.4",
@@ -54,6 +55,7 @@
   },
   "scripts": {
     "start": "node scripts/start.js",
+    "now-start": "serve --single ./build",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
     "format": "prettier --write \"src/**/*.{js,json}\""
