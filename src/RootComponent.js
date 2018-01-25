@@ -1,5 +1,6 @@
 import React from "react";
 import { observer } from "mobx-react";
+import { RequireIdentity } from "./elements";
 import Header from "./HeaderComponent";
 import Footer from "./FooterComponent";
 import IndexComponent from "./pages/index/IndexComponent";
@@ -17,7 +18,11 @@ const RenderContent = ({ model }) => {
   } else if (model.pages["/how"]) {
     return <HowComponent model={model.pages["/how"]} />;
   } else if (model.pages["/build"]) {
-    return <BuildComponent model={model.pages["/build"]} />;
+    return (
+      <RequireIdentity model={model}>
+        <BuildComponent model={model.pages["/build"]} />
+      </RequireIdentity>
+    );
   } else if (model.pages["/pricing"]) {
     return <PricingComponent model={model.pages["/pricing"]} />;
   } else if (model.pages["/about"]) {
