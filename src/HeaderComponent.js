@@ -16,7 +16,7 @@ const Logo = styled.a`
   font-size: 1.5em;
   padding: 0;
   margin-right: 1em;
-  transform: rotate(-7deg);
+  transform: rotate(-5deg);
 
   &:focus {
     text-decoration: none;
@@ -90,7 +90,7 @@ const HeaderNav = ({ model }) => (
           model.pushUrl(e.key);
         }
       }}
-      selectedKeys={[]}
+      selectedKeys={[ window.location.pathname ]}
       mode="horizontal"
     >
       <Menu.Item key="/build">

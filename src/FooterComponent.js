@@ -12,7 +12,7 @@ export default ({ identity }) => (
     ©2017 Sophon LLC.
     <p>
       <a href="mailto:photopaint.us@gmail.com">
-        <Icon type="mail" />photopaint.us@gmail.com
+        <Icon type="mail" style={ { marginRight: '.1em' } } />photopaint.us@gmail.com
       </a>
     </p>
   </Footer>

@@ -14,7 +14,7 @@ export default ({ model }) => (
     </SectionParagraph>
     <SectionParagraph>
       Any question please feel free to contact us at{" "}
-      <a href="photopaint.us@gmail.com">photopaint.us@gmail.com</a>
+      <a href="mailto:photopaint.us@gmail.com">photopaint.us@gmail.com</a>
     </SectionParagraph>
   </Section>
 );
