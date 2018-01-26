@@ -1,11 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 import { media } from "./utils/css";
+import { Menu, Icon } from "antd";
 
 const Header = styled.div`
   width: 100%;
   padding: 0;
-  line-height: 5em;
+  line-height: 46px;
   background: url("./header-bg.jpg") no-repeat center center / cover;
 `;
 
@@ -14,6 +15,7 @@ const Logo = styled.a`
   font-family: Satisfy;
   font-size: 1.5em;
   padding: 0;
+  margin-right: 1em;
   transform: rotate(-7deg);
 
   &:focus {
@@ -23,22 +25,6 @@ const Logo = styled.a`
   ${media.phone`
     font-size: 1.2em;
     flex: 1 100%;
-  `};
-`;
-
-const NavLink = styled.a`
-  display: block;
-  line-height: 3.85em;
-  padding: 0 1em;
-  font-size: 1.3em;
-
-  &:focus {
-    text-decoration: none;
-  }
-
-  ${media.phone`
-    flex: 1 100%;
-    padding: 0;
   `};
 `;
 
@@ -94,57 +80,41 @@ const HeaderNav = ({ model }) => (
     >
       PhotoPaint
     </Logo>
-
-    <NavLink
-      key="build"
-      href="/build"
-      onClick={event => {
-        event.preventDefault();
-        model.pushUrl("/build");
+    <Menu
+      onClick={e => {
+        if (e.key === "/signout") {
+          window.location.href = model.signOutUrl();
+        } else if (e.key === "/signin") {
+          window.location.href = model.signInUrl();
+        } else {
+          model.pushUrl(e.key);
+        }
       }}
-      style={{ fontWeight: "500", textDecoration: "underline" }}
+      selectedKeys={[]}
+      mode="horizontal"
     >
-      Build
-    </NavLink>
-    <NavLink
-      key="how"
-      href="/how"
-      onClick={event => {
-        event.preventDefault();
-        model.pushUrl("/how");
-      }}
-    >
-      How it works
-    </NavLink>
-    <NavLink
-      key="pricing"
-      href="/pricing"
-      onClick={event => {
-        event.preventDefault();
-        model.pushUrl("/pricing");
-      }}
-    >
-      Pricing
-    </NavLink>
-    <NavLink
-      key="about"
-      href="/about"
-      onClick={event => {
-        event.preventDefault();
-        model.pushUrl("/about");
-      }}
-    >
-      About
-    </NavLink>
-    {model.hasIdentity() ? (
-      <NavLink key="logout" right href={model.signOutUrl()}>
-        Log Out
-      </NavLink>
-    ) : (
-      <NavLink key="signin" right href={model.signInUrl()}>
-        Sign In / Register
-      </NavLink>
-    )}
+      <Menu.Item key="/build">
+        <Icon type="edit" />Build
+      </Menu.Item>
+      <Menu.Item key="/how">
+        <Icon type="question-circle" />How it works
+      </Menu.Item>
+      <Menu.Item key="/pricing">
+        <Icon type="calculator" />Pricing
+      </Menu.Item>
+      <Menu.Item key="/about">
+        <Icon type="bulb" />About
+      </Menu.Item>
+      {model.hasIdentity() ? (
+        <Menu.Item key="/signout">
+          <Icon type="user" />Sign Out
+        </Menu.Item>
+      ) : (
+        <Menu.Item key="/signin">
+          <Icon type="user" />Sign In / Register
+        </Menu.Item>
+      )}
+    </Menu>
   </HeaderNavWrap>
 );
 

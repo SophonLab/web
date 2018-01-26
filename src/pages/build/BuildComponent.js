@@ -8,7 +8,21 @@ export default ({ model }) => (
     <Section>
       <Col span={11} style={{ minWidth: "20em", marginBottom: "2em" }}>
         <SectionSlogan>Photo</SectionSlogan>
-        <Dragger>
+        <Dragger
+          multiple={false}
+          action={model.uploadUrl()}
+          onChange={info => {
+            const status = info.file.status;
+            if (status !== "uploading") {
+              console.log(info.file, info.fileList);
+            }
+            if (status === "done") {
+              console.log(`${info.file.name} file uploaded successfully.`);
+            } else if (status === "error") {
+              console.log(`${info.file.name} file upload failed.`);
+            }
+          }}
+        >
           <p className="ant-upload-drag-icon">
             <Icon type="picture" />
           </p>

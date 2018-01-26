@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout } from "antd";
+import { Layout, Icon } from "antd";
 const { Footer } = Layout;
 
 export default ({ identity }) => (
@@ -11,7 +11,9 @@ export default ({ identity }) => (
     )}
     ©2017 Sophon LLC.
     <p>
-      <a href="photopaint.us@gmail.com">photopaint.us@gmail.com</a>
+      <a href="mailto:photopaint.us@gmail.com">
+        <Icon type="mail" />photopaint.us@gmail.com
+      </a>
     </p>
   </Footer>
 );

@@ -19,7 +19,8 @@ const Identity = types.model("Identity", {
 });
 
 const Config = types.model("Config", {
-  clientId: types.string
+  clientId: types.string,
+  apiBase: types.string
 });
 
 const Location = types.model("Location", {
@@ -52,8 +53,8 @@ const routeRules = [
   },
   {
     pathname: "/build",
-    setup() {
-      return BuildModel.create();
+    setup(newLocation, rootModel) {
+      return BuildModel.create({ apiBase: rootModel.config.apiBase });
     }
   },
   {
@@ -93,17 +94,11 @@ const RootModel = types
     },
 
     signInUrl() {
-      return signInUrl(
-        self.config.clientId,
-        self.stateToBase64()
-      );
+      return signInUrl(self.config.clientId, self.stateToBase64());
     },
 
     registerUrl() {
-      return signInUrl(
-        self.config.clientId,
-        self.stateToBase64()
-      );
+      return signInUrl(self.config.clientId, self.stateToBase64());
     },
 
     signOutUrl() {
@@ -194,7 +189,7 @@ const RootModel = types
 
         if (rule) {
           self.pages = Pages.create({
-            [rule.pathname]: rule.setup(newLocation)
+            [rule.pathname]: rule.setup(newLocation, self)
           });
         } else {
           rootDebug("Unknown Path Name");

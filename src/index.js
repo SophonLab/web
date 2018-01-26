@@ -12,7 +12,8 @@ const historyDebug = debug("web:history");
 const model = RootModel.create(
   {
     config: {
-      clientId: "phMSpc6uBLJan39hueeMSbIJIJuJFIr0"
+      clientId: "phMSpc6uBLJan39hueeMSbIJIJuJFIr0",
+      apiBase: "//ec2-35-162-65-98.us-west-2.compute.amazonaws.com:8080"
     }
   },
   {

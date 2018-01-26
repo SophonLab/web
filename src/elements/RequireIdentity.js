@@ -1,6 +1,6 @@
 import React from "react";
 import { Section, SectionLead } from ".";
-import { Row, Button } from "antd";
+import { Row, Button, Icon } from "antd";
 
 export default ({ model, children }) => {
   if (model.hasIdentity()) {
@@ -18,7 +18,7 @@ export default ({ model, children }) => {
               window.location.href = model.signInUrl();
             }}
           >
-            Sign In / Register
+            <Icon type="user" />Sign In / Register
           </Button>
         </Row>
       </Section>

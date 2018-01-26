@@ -30,9 +30,8 @@ export function signInUrl(clientId, state) {
 export function signOutUrl(clientId) {
   return (
     `https://${AUTH0_TENANT_NAME}.auth0.com/v2/logout?` +
-    [
-      `client_id=${clientId}`,
-      `returnTo=${getCallbackUrlPrefix()}/out`
-    ].join("&")
+    [`client_id=${clientId}`, `returnTo=${getCallbackUrlPrefix()}/out`].join(
+      "&"
+    )
   );
 }
