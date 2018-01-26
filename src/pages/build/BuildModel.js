@@ -2,7 +2,9 @@ import { types } from "mobx-state-tree";
 
 const BuildModel = types
   .model("BuildModel", {
-    apiBase: types.string
+    apiBase: types.string,
+    selectedStyle: types.maybe(types.string),
+    mixingLevel: types.optional(types.string, "mid")
   })
   .views(self => ({
     uploadUrl() {
@@ -22,7 +24,13 @@ const BuildModel = types
     }
   }))
   .actions(self => ({
-    // TODO
+    setSelectedStyle(selectedStyle) {
+      self.selectedStyle = selectedStyle;
+    },
+
+    setMixingLevel(mixingLevel) {
+      self.mixingLevel = mixingLevel;
+    }
   }));
 
 export default BuildModel;

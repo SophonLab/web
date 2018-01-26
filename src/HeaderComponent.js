@@ -90,7 +90,7 @@ const HeaderNav = ({ model }) => (
           model.pushUrl(e.key);
         }
       }}
-      selectedKeys={[ window.location.pathname ]}
+      selectedKeys={[window.location.pathname]}
       mode="horizontal"
     >
       <Menu.Item key="/build">

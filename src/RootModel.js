@@ -54,7 +54,9 @@ const routeRules = [
   {
     pathname: "/build",
     setup(newLocation, rootModel) {
-      return BuildModel.create({ apiBase: rootModel.config.apiBase });
+      return BuildModel.create({
+        apiBase: rootModel.config.apiBase
+      });
     }
   },
   {
