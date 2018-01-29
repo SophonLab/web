@@ -2,7 +2,18 @@ import React from "react";
 import { observer } from "mobx-react";
 import styled from "styled-components";
 import { Section, SectionSlogan } from "../../elements";
-import { Button, Upload, Icon, List, Form, Radio, Card, Tooltip } from "antd";
+import {
+  Button,
+  Upload,
+  Icon,
+  List,
+  Form,
+  Radio,
+  Card,
+  Tooltip,
+  Spin,
+  Alert
+} from "antd";
 const Dragger = Upload.Dragger;
 
 const STYLES = [
@@ -185,68 +196,120 @@ const formItemLayout = {
   wrapperCol: { span: 14 }
 };
 
-export default observer(function BuildComponent({ model }) {
+function BuildForm({ model }) {
   return (
     <Section>
       <SectionSlogan>Build Your Photo Into An Artwork</SectionSlogan>
-      <Form onSubmit={() => {}}>
-        <Form.Item label="Photo" {...formItemLayout}>
-          <Dragger
-            multiple={false}
-            action={model.uploadUrl()}
-            onChange={info => {
-              const status = info.file.status;
-              if (status !== "uploading") {
-                console.log(info.file, info.fileList);
-              }
-              if (status === "done") {
-                console.log(`${info.file.name} file uploaded successfully.`);
-              } else if (status === "error") {
-                console.log(`${info.file.name} file upload failed.`);
-              }
-            }}
+      <Spin
+        size="large"
+        tip="Working hard to build the art work..."
+        spinning={model.isBuilding()}
+      >
+        <Form onSubmit={() => {}}>
+          {model.hasError() && (
+            <Form.Item label="Error" {...formItemLayout}>
+              <Alert message={model.errorMessage} type="error" />
+            </Form.Item>
+          )}
+          <Form.Item label="Photo" {...formItemLayout}>
+            <Dragger
+              multiple={false}
+              action={model.uploadUrl()}
+              name="image"
+              onChange={info => {
+                const status = info.file.status;
+                if (status !== "uploading") {
+                  console.log(info.file, info.fileList);
+                }
+                if (status === "done") {
+                  console.log(`${info.file.name} file uploaded successfully.`);
+                } else if (status === "error") {
+                  console.log(`${info.file.name} file upload failed.`);
+                }
+              }}
+            >
+              <p className="ant-upload-drag-icon">
+                <Icon type="picture" />
+              </p>
+              <p className="ant-upload-text">
+                Click or drag file to this area to upload
+              </p>
+            </Dragger>
+          </Form.Item>
+          <Form.Item label="Style" {...formItemLayout}>
+            <StyleChooser
+              styles={STYLES}
+              selectedStyle={model.selectedStyle}
+              onStyleClick={model.setSelectedStyle}
+            />
+          </Form.Item>
+          <Form.Item
+            label={
+              <Tooltip title="Higher mixing level will lead to stronger stylization effect.">
+                Mixing Level
+                <Icon type="question-circle-o" style={{ marginLeft: ".5em" }} />
+              </Tooltip>
+            }
+            {...formItemLayout}
           >
-            <p className="ant-upload-drag-icon">
-              <Icon type="picture" />
-            </p>
-            <p className="ant-upload-text">
-              Click or drag file to this area to upload
-            </p>
-          </Dragger>
-        </Form.Item>
-        <Form.Item label="Style" {...formItemLayout}>
-          <StyleChooser
-            styles={STYLES}
-            selectedStyle={model.selectedStyle}
-            onStyleClick={model.setSelectedStyle}
-          />
-        </Form.Item>
-        <Form.Item
-          label={
-            <Tooltip title="Higher mixing level will lead to stronger stylization effect.">
-              Mixing Level
-              <Icon type="question-circle-o" style={{ marginLeft: ".5em" }} />
-            </Tooltip>
-          }
-          {...formItemLayout}
-        >
-          <Radio.Group
-            onChange={e => {
-              model.setMixingLevel(e.target.value);
-            }}
-            value={model.mixingLevel}
-          >
-            <Radio.Button value="low">Low</Radio.Button>
-            <Radio.Button value="mid">Medium</Radio.Button>
-            <Radio.Button value="high">High</Radio.Button>
-          </Radio.Group>
-        </Form.Item>
-        <Form.Item wrapperCol={{ span: 12, offset: 6 }}>
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
-        </Form.Item>
-      </Form>
+            <Radio.Group
+              onChange={e => {
+                model.setMixingLevel(e.target.value);
+              }}
+              value={model.mixingLevel}
+            >
+              <Radio.Button value="low">Low</Radio.Button>
+              <Radio.Button value="mid">Medium</Radio.Button>
+              <Radio.Button value="high">High</Radio.Button>
+            </Radio.Group>
+          </Form.Item>
+          <Form.Item wrapperCol={{ span: 12, offset: 6 }}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              onClick={e => {
+                e.preventDefault();
+                model.build();
+              }}
+            >
+              Submit
+            </Button>
+          </Form.Item>
+        </Form>
+      </Spin>
     </Section>
   );
+}
+
+function BuildResult({ styledImageUrl, onBuildAgain }) {
+  return (
+    <Section>
+      <SectionSlogan>Here is Your Artwork</SectionSlogan>
+      <img src={styledImageUrl} alt="Result Artwork" width="100%" />
+      <Button
+        type="primary"
+        htmlType="submit"
+        style={{ marginTop: "2em" }}
+        onClick={e => {
+          e.preventDefault();
+          onBuildAgain();
+        }}
+      >
+        Build Again
+      </Button>
+    </Section>
+  );
+}
+
+export default observer(function BuildComponent({ model }) {
+  if (model.isBuilt()) {
+    return (
+      <BuildResult
+        styledImageUrl={model.styledImageUrl}
+        onBuildAgain={model.reset}
+      />
+    );
+  } else {
+    return <BuildForm model={model} />;
+  }
 });
