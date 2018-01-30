@@ -46,7 +46,12 @@ export default ({ model }) => (
         span={8}
         style={{ background: "#008000", borderRight: "4px solid #ececec" }}
       >
-        <ZoomImage atl="1K" src="./resolution-1k.jpg" width="1176" height="350" />
+        <ZoomImage
+          atl="1K"
+          src="./resolution-1k.jpg"
+          width="1176"
+          height="350"
+        />
         <CardHeader>1K</CardHeader>
         <CardBody>
           <p>Free!</p>

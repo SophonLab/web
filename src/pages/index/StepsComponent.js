@@ -1,95 +1,75 @@
 import React from "react";
-import styled from "styled-components";
-import { media } from "../../utils/css";
-import { Row, Button, Badge } from "antd";
+import { Row, Button, Badge, List } from "antd";
 
-const Steps = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-around;
+const STEPS = [
+  {
+    seq: 1,
+    title: "Upload Photo",
+    src:
+      "https://images-sophon.s3.amazonaws.com/uploads/content/image/2546/thumb400_img.jpg",
+    alt: "Origin"
+  },
+  {
+    seq: 2,
+    title: "Choose style",
+    src:
+      "https://images-sophon.s3.amazonaws.com/uploads/style/image/99/thumb200_img170317024859347d36b6ab.jpeg",
+    alt: "Style"
+  },
+  {
+    seq: 3,
+    title: "Submit",
+    src:
+      "https://images-sophon.s3.amazonaws.com/uploads/pimage/imageurl/4363/thumb400_img17103117164679d9c1215c.jpg",
+    alt: "Styled"
+  }
+];
 
-  ${media.phone`
-    flex-direction: column;
-  `};
-`;
+function Step({ seq, title, src, alt }) {
+  return (
+    <div>
+      <Row
+        style={{
+          lineHeight: "1.3em",
+          fontSize: "1.3em",
+          fontWeight: 400,
+          marginBottom: ".5em"
+        }}
+      >
+        <Badge
+          count={seq}
+          style={{
+            backgroundColor: "#1890ff",
+            marginRight: "0.5em",
+            verticalAlign: "bottom"
+          }}
+        />
+        {title}
+      </Row>
+      <Row>
+        <img src={src} alt={alt} style={{ width: "100%", height: "auto" }} />
+      </Row>
+    </div>
+  );
+}
 
-const Step = styled.div`
-  height: 36em;
-  flex: 1 auto;
-
-  ${media.desktop`
-    height: 29em;
-  `};
-
-  ${media.phone`
-    height: 23em;
-  `};
-`;
-
-const StepTitle = styled.div`
-  line-height: 1.3em;
-  height: 1.8em;
-  font-size: 1.3em;
-  font-weight: 400;
-`;
-
-const StepImage = styled.img`
-  height: 24em;
-  overflow: hidden;
-
-  ${media.desktop`
-    height: 19em;
-  `};
-`;
-
-const StepTitleBadge = ({ count }) => (
-  <Badge
-    count={count}
-    style={{
-      backgroundColor: "#1890ff",
-      marginRight: "0.5em",
-      verticalAlign: "bottom"
-    }}
-  />
-);
+function Steps({ steps }) {
+  return (
+    <List
+      grid={{ gutter: 16, xs: 1, sm: 3, md: 3, lg: 3, xl: 3, xxl: 3 }}
+      dataSource={steps}
+      renderItem={step => (
+        <List.Item>
+          <Step {...step} />
+        </List.Item>
+      )}
+    />
+  );
+}
 
 export default ({ model }) => (
   <div>
-    <Steps>
-      <Step position="left">
-        <StepTitle>
-          <StepTitleBadge count={1} />
-          Upload photo
-        </StepTitle>
-        <StepImage
-          src="https://images-sophon.s3.amazonaws.com/uploads/content/image/2553/thumb400_img.jpg"
-          alt="Origin"
-        />
-      </Step>
-
-      <Step position="center">
-        <StepTitle>
-          <StepTitleBadge count={2} />
-          Choose style
-        </StepTitle>
-        <StepImage
-          src="https://images-sophon.s3.amazonaws.com/uploads/style/image/2/thumb200_img.jpg"
-          alt="Style"
-        />
-      </Step>
-
-      <Step position="right">
-        <StepTitle>
-          <StepTitleBadge count={3} />
-          Submit
-        </StepTitle>
-        <StepImage
-          src="https://images-sophon.s3.amazonaws.com/uploads/pimage/imageurl/4371/thumb400_img171106023740a6df594674.jpg"
-          alt="Styled"
-        />
-      </Step>
-    </Steps>
-
+    <Steps steps={STEPS} />
     <Row style={{ marginTop: "1.5em" }}>
       <Button
         type="primary"
