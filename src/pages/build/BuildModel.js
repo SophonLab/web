@@ -18,7 +18,7 @@ const BuildModel = types
     errorMessage: types.maybe(types.string)
   })
   .views(self => ({
-    uploadUrl() {
+    get uploadUrl() {
       return self.apiBase + "/api/v1/image";
     },
 
@@ -34,15 +34,15 @@ const BuildModel = types
       return self.apiBase + "/api/v1/art/output/" + id;
     },
 
-    isBuilding() {
+    get isBuilding() {
       return self.state === "building";
     },
 
-    isBuilt() {
+    get isBuilt() {
       return self.state === "built";
     },
 
-    hasError() {
+    get hasError() {
       return self.errorMessage !== null;
     }
   }))
