@@ -38,7 +38,7 @@ export default ({ model }) => (
   <div style={{ marginTop: "1em" }}>
     <Row>
       <Col span={24}>
-        <BgImage src="./resolution-bg.jpg" />
+        <BgImage alt="Resolution Background" src="./resolution-bg.jpg" />
       </Col>
     </Row>
     <Row>
@@ -46,7 +46,7 @@ export default ({ model }) => (
         span={8}
         style={{ background: "#008000", borderRight: "4px solid #ececec" }}
       >
-        <ZoomImage src="./resolution-1k.jpg" width="1176" height="350" />
+        <ZoomImage atl="1K" src="./resolution-1k.jpg" width="1176" height="350" />
         <CardHeader>1K</CardHeader>
         <CardBody>
           <p>Free!</p>
@@ -72,7 +72,7 @@ export default ({ model }) => (
           borderRight: "2px solid #ececec"
         }}
       >
-        <ZoomImage src="./resolution-2k.jpg" />
+        <ZoomImage alt="2K" src="./resolution-2k.jpg" />
         <CardHeader>2K</CardHeader>
         <CardBody>
           <p>Contact Us</p>
@@ -82,7 +82,7 @@ export default ({ model }) => (
         span={8}
         style={{ background: "#8B0000", borderLeft: "4px solid #ececec" }}
       >
-        <ZoomImage src="./resolution-8k.jpg" />
+        <ZoomImage alt="8K" src="./resolution-8k.jpg" />
         <CardHeader>8K</CardHeader>
         <CardBody>
           <p>Contact Us</p>

@@ -7,7 +7,7 @@ const Header = styled.div`
   width: 100%;
   padding: 0;
   line-height: 46px;
-  background: url("./header-bg.jpg") no-repeat center center / cover;
+  background: url("./header-bg-small.jpg") no-repeat center center / cover;
 `;
 
 const Logo = styled.a`
@@ -39,10 +39,10 @@ const Slogan = styled.p`
   text-transform: uppercase;
   text-align: center;
 
-  font-size: 4em;
+  font-size: 3em;
 
   ${media.tablet`
-    font-size: 4em;
+    font-size: 3em;
     padding-top: 1em;
   `} ${media.phone`
     font-size: 1.8em;
