@@ -1,6 +1,6 @@
 import React from "react";
-import { Section, SectionLead } from ".";
-import { Row, Button, Icon } from "antd";
+import { Section } from ".";
+import { Row, Button, Icon, Alert } from "antd";
 
 export default ({ model, children }) => {
   if (model.hasIdentity()) {
@@ -8,7 +8,11 @@ export default ({ model, children }) => {
   } else {
     return (
       <Section>
-        <SectionLead>Identity is required for current page</SectionLead>
+        <Alert
+          message="Identity is required for current page"
+          type="warning"
+          showIcon
+        />
         <Row style={{ marginTop: "1.5em" }}>
           <Button
             type="primary"
