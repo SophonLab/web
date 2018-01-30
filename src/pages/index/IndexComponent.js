@@ -3,9 +3,9 @@ import {
   Section,
   SectionSlogan,
   SectionLead,
-  SectionParagraph
+  SectionParagraph,
+  Cases
 } from "../../elements";
-import { Cases, Case } from "./CasesComponent";
 import Steps from "./StepsComponent";
 import Resolutions from "./ResolutionsComponent";
 
@@ -40,7 +40,7 @@ export default ({ model }) => (
         See what others have created. Our users' gallery is updated on a daily
         basis.
       </SectionLead>
-      <Cases style={{ marginTop: "1.5em" }}>{model.cases.map(Case)}</Cases>
+      <Cases cases={model.cases} />
     </Section>
   </div>
 );

@@ -1,14 +1,8 @@
 import React from "react";
 import { Row, Col } from "antd";
 
-export const Cases = Row;
-
-export const Case = ({ styled, origin, style }) => (
-  <Col
-    key={styled}
-    span={8}
-    style={{ marginBottom: "1.5em", paddingRight: "1em", minWidth: "20em" }}
-  >
+export default ({ styled, origin, style }) => (
+  <div>
     <Row key="styled">
       <Col span={24}>
         <img
@@ -34,5 +28,5 @@ export const Case = ({ styled, origin, style }) => (
         />
       </Col>
     </Row>
-  </Col>
+  </div>
 );
