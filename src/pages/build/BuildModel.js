@@ -1,9 +1,54 @@
 import { types } from "mobx-state-tree";
 
-// function createArtJob(url) {
-//   // POST to art job
-//   return fetch(url).then(() => true);
-// }
+function createArtJob(url, artStyleId, artMixingLevel, imageId) {
+  return fetch(url, {
+    method: "POST",
+    mode: "cors",
+    headers: new Headers({
+      "Content-Type": "text/json"
+    }),
+    body: JSON.stringify({
+      imgId: imageId,
+      styles: [{ id: artStyleId, mixingLevel: artMixingLevel }]
+    })
+  }).then(function(response) {
+    return response.json();
+  });
+}
+
+function waitForJob(url) {
+  return new Promise(function(resolve, reject) {
+    const timeout = setTimeout(function() {
+      reject("Timed out. Server might be too busy, please try again later");
+    }, 60000);
+
+    const check = setInterval(function() {
+      fetch(url, {
+        mode: "cors",
+        headers: new Headers({
+          "Content-Type": "text/json"
+        })
+      })
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(job) {
+          if (job.status === "finished") {
+            clearInterval(check);
+            clearTimeout(timeout);
+
+            resolve(job);
+          }
+        })
+        .catch(function() {
+          clearInterval(check);
+          clearTimeout(timeout);
+
+          reject("Server error. Please contact us.");
+        });
+    }, 3000);
+  });
+}
 
 const BuildModel = types
   .model("BuildModel", {
@@ -15,23 +60,27 @@ const BuildModel = types
       "form"
     ),
     styledImageUrl: types.maybe(types.string),
-    errorMessage: types.maybe(types.string)
+    showError: types.optional(types.boolean, false),
+    criticalError: types.maybe(types.string),
+    jobId: types.maybe(types.string),
+    originImageId: types.maybe(types.string),
+    originImageUrl: types.maybe(types.string)
   })
   .views(self => ({
     get uploadUrl() {
       return self.apiBase + "/api/v1/image";
     },
 
-    createArtJobUrl() {
+    get createArtJobUrl() {
       return self.apiBase + "/api/v1/art/";
     },
 
-    queryArtJobUrl(id) {
-      return self.apiBase + "/api/v1/art/" + id;
+    queryArtJobUrl(jobId) {
+      return self.apiBase + "/api/v1/art/" + jobId;
     },
 
-    outputUrl(id) {
-      return self.apiBase + "/api/v1/art/output/" + id;
+    get isValidForm() {
+      return self.originImageId && self.selectedStyle;
     },
 
     get isBuilding() {
@@ -40,10 +89,6 @@ const BuildModel = types
 
     get isBuilt() {
       return self.state === "built";
-    },
-
-    get hasError() {
-      return self.errorMessage !== null;
     }
   }))
   .actions(self => ({
@@ -55,6 +100,16 @@ const BuildModel = types
       self.mixingLevel = mixingLevel;
     },
 
+    setOriginImage(imageId, imageUrl) {
+      self.originImageId = imageId;
+      self.originImageUrl = imageUrl;
+    },
+
+    resetOriginImage() {
+      self.originImageId = null;
+      self.originImageUrl = null;
+    },
+
     succeed(styledImageUrl) {
       self.state = "built";
       self.styledImageUrl = styledImageUrl;
@@ -62,31 +117,43 @@ const BuildModel = types
 
     fail(message) {
       self.state = "form";
-      self.errorMessage = message;
+      self.criticalError = message;
     },
 
     build() {
-      self.state = "building";
+      if (!self.isValidForm) {
+        self.showError = true;
+      } else {
+        self.state = "building";
+        self.showError = false;
 
-      // TODO create art job
-      // interval querying state every 3 seconds
-      const checking = setInterval(() => {
-        // check art job state
-        const result = Math.floor(Math.random() * 100);
+        createArtJob(
+          self.createArtJobUrl,
+          self.selectedStyle,
+          self.mixingLevel,
+          self.originImageId
+        )
+          .then(response => {
+            return waitForJob(self.queryArtJobUrl(response.jobId));
+          })
+          .then(response => {
+            self.succeed(response.outputUrls[0]);
+          })
+          .catch(error => {
+            console.log(error);
 
-        if (result > 50) {
-          self.succeed("/how-machine-learning.jpg");
-        } else {
-          self.fail("Time Out");
-        }
-
-        clearInterval(checking);
-      }, 3000);
+            self.fail(error.message);
+          });
+      }
     },
 
     reset() {
       self.state = "form";
-      self.errorMessage = null;
+      self.showError = false;
+      self.criticalError = null;
+      self.originImageId = null;
+      self.originImageUrl = null;
+      self.selectedStyle = null;
       self.styledImageUrl = null;
     }
   }));

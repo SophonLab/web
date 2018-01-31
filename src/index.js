@@ -13,7 +13,8 @@ const model = RootModel.create(
   {
     config: {
       clientId: "phMSpc6uBLJan39hueeMSbIJIJuJFIr0",
-      apiBase: "https://ur2mz26vge.execute-api.us-west-2.amazonaws.com/dev"
+      apiBase: "//ec2-35-162-65-98.us-west-2.compute.amazonaws.com:8080"
+      // apiBase: "https://ur2mz26vge.execute-api.us-west-2.amazonaws.com/dev"
     }
   },
   {

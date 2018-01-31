@@ -9,7 +9,7 @@ export default observer(function BuildComponent({ model }) {
       <BuildResult
         styled={model.styledImageUrl}
         style={`/style-images/${model.selectedStyle}.jpg`}
-        origin={model.styledImageUrl}
+        origin={model.originImageUrl}
         onBuildAgain={model.reset}
       />
     );
@@ -17,14 +17,17 @@ export default observer(function BuildComponent({ model }) {
     return (
       <BuildForm
         isBuilding={model.isBuilding}
-        hasError={model.hasError}
-        errorMessage={model.errorMessage}
+        showError={model.showError}
+        criticalError={model.criticalError}
+        originImageId={model.originImageId}
         mixingLevel={model.mixingLevel}
         selectedStyle={model.selectedStyle}
         uploadUrl={model.uploadUrl}
         onSetSelectedStyle={model.setSelectedStyle}
         onSetMixingLevel={model.setMixingLevel}
         onBuild={model.build}
+        onUploadSucceed={model.setOriginImage}
+        onUploadReset={model.resetOriginImage}
       />
     );
   }

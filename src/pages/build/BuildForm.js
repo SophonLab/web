@@ -11,14 +11,17 @@ const formItemLayout = {
 
 export default function BuildForm({
   isBuilding,
-  hasError,
-  errorMessage,
+  showError,
+  criticalError,
   uploadUrl,
+  originImageId,
   selectedStyle,
   onSetSelectedStyle,
   mixingLevel,
   onSetMixingLevel,
-  onBuild
+  onBuild,
+  onUploadSucceed,
+  onUploadReset
 }) {
   return (
     <Section>
@@ -29,26 +32,28 @@ export default function BuildForm({
         spinning={isBuilding}
       >
         <Form onSubmit={() => {}}>
-          {hasError && (
-            <Form.Item label="Error" {...formItemLayout}>
-              <Alert message={errorMessage} type="error" />
+          {criticalError && (
+            <Form.Item label="Critical Error" {...formItemLayout}>
+              <Alert message={criticalError} type="error" />
             </Form.Item>
           )}
-          <Form.Item label="Photo" {...formItemLayout}>
+          <Form.Item
+            label="Photo"
+            validationStatus={originImageId ? "success" : "error"}
+            help={showError && !originImageId ? "Please choose an image" : null}
+            {...formItemLayout}
+          >
             <Dragger
               multiple={false}
               action={uploadUrl}
               name="image"
-              onChange={info => {
-                const status = info.file.status;
-                if (status !== "uploading") {
-                  console.log(info.file, info.fileList);
+              onChange={({ file }) => {
+                if (file.status === "done") {
+                  onUploadSucceed(file.response.imgId, file.response.imgUrl);
                 }
-                if (status === "done") {
-                  console.log(`${info.file.name} file uploaded successfully.`);
-                } else if (status === "error") {
-                  console.log(`${info.file.name} file upload failed.`);
-                }
+              }}
+              onRemove={file => {
+                onUploadReset();
               }}
             >
               <p className="ant-upload-drag-icon">
@@ -59,7 +64,12 @@ export default function BuildForm({
               </p>
             </Dragger>
           </Form.Item>
-          <Form.Item label="Style" {...formItemLayout}>
+          <Form.Item
+            label="Style"
+            validationStatus={selectedStyle ? "success" : "error"}
+            help={showError && !selectedStyle ? "Please choose a style" : ""}
+            {...formItemLayout}
+          >
             <StyleChooser
               selectedStyle={selectedStyle}
               onStyleClick={onSetSelectedStyle}
