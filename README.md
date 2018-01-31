@@ -7,6 +7,7 @@ Sophon's website.
 - Install `yarn` [here](https://yarnpkg.com/en/docs/install)
 - Run `yarn` in project folder
 - Run `yarn start` to run application in local
+- Run `yarn run storybook` to start storybook for component development
 
 ## Deploy
 
