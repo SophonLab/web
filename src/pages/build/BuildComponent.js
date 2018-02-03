@@ -26,8 +26,8 @@ export default observer(function BuildComponent({ model }) {
         onSetSelectedStyle={model.setSelectedStyle}
         onSetMixingLevel={model.setMixingLevel}
         onBuild={model.build}
-        onUploadSucceed={model.setOriginImage}
-        onUploadReset={model.resetOriginImage}
+        onUploadSucceed={model.setOriginImageUrl}
+        onUploadReset={model.resetOriginImageUrl}
       />
     );
   }

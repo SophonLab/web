@@ -49,7 +49,7 @@ export default function BuildForm({
               name="image"
               onChange={({ file }) => {
                 if (file.status === "done") {
-                  onUploadSucceed(file.response.imgId, file.response.imgUrl);
+                  onUploadSucceed(file.response.imgUrl);
                 }
               }}
               onRemove={file => {

@@ -1,6 +1,6 @@
 import { types } from "mobx-state-tree";
 
-function createArtJob(url, artStyleId, artMixingLevel, imageId) {
+function createArtJob(url, artStyleId, artMixingLevel, imageUrl) {
   return fetch(url, {
     method: "POST",
     mode: "cors",
@@ -8,7 +8,7 @@ function createArtJob(url, artStyleId, artMixingLevel, imageId) {
       "Content-Type": "text/json"
     }),
     body: JSON.stringify({
-      imgId: imageId,
+      imgUrl: imageUrl,
       styles: [{ id: artStyleId, mixingLevel: artMixingLevel }]
     })
   }).then(function(response) {
@@ -18,11 +18,15 @@ function createArtJob(url, artStyleId, artMixingLevel, imageId) {
 
 function waitForJob(url) {
   return new Promise(function(resolve, reject) {
-    const timeout = setTimeout(function() {
+    let check = null;
+    let timeout = null;
+
+    timeout = setTimeout(function() {
       reject("Timed out. Server might be too busy, please try again later");
+      clearInterval(check);
     }, 60000);
 
-    const check = setInterval(function() {
+    check = setInterval(function() {
       fetch(url, {
         mode: "cors",
         headers: new Headers({
@@ -38,6 +42,11 @@ function waitForJob(url) {
             clearTimeout(timeout);
 
             resolve(job);
+          } else if (job.status === "failed") {
+            clearInterval(check);
+            clearTimeout(timeout);
+
+            reject("Job failed. Please contact us. Job Url is " + url);
           }
         })
         .catch(function() {
@@ -63,7 +72,6 @@ const BuildModel = types
     showError: types.optional(types.boolean, false),
     criticalError: types.maybe(types.string),
     jobId: types.maybe(types.string),
-    originImageId: types.maybe(types.string),
     originImageUrl: types.maybe(types.string)
   })
   .views(self => ({
@@ -80,7 +88,7 @@ const BuildModel = types
     },
 
     get isValidForm() {
-      return self.originImageId && self.selectedStyle;
+      return self.originImageUrl && self.selectedStyle;
     },
 
     get isBuilding() {
@@ -100,13 +108,11 @@ const BuildModel = types
       self.mixingLevel = mixingLevel;
     },
 
-    setOriginImage(imageId, imageUrl) {
-      self.originImageId = imageId;
+    setOriginImageUrl(imageUrl) {
       self.originImageUrl = imageUrl;
     },
 
-    resetOriginImage() {
-      self.originImageId = null;
+    resetOriginImageUrl() {
       self.originImageUrl = null;
     },
 
@@ -131,7 +137,7 @@ const BuildModel = types
           self.createArtJobUrl,
           self.selectedStyle,
           self.mixingLevel,
-          self.originImageId
+          self.originImageUrl
         )
           .then(response => {
             return waitForJob(self.queryArtJobUrl(response.jobId));
@@ -140,9 +146,7 @@ const BuildModel = types
             self.succeed(response.outputUrls[0]);
           })
           .catch(error => {
-            console.log(error);
-
-            self.fail(error.message);
+            self.fail(error.message || error);
           });
       }
     },
@@ -151,7 +155,6 @@ const BuildModel = types
       self.state = "form";
       self.showError = false;
       self.criticalError = null;
-      self.originImageId = null;
       self.originImageUrl = null;
       self.selectedStyle = null;
       self.styledImageUrl = null;
