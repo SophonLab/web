@@ -1,7 +1,7 @@
-import { types } from "mobx-state-tree";
+import { types, flow } from "mobx-state-tree";
 
-function createArtJob(url, artStyleId, artMixingLevel, imageUrl) {
-  return fetch(url, {
+async function createArtJob(url, artStyleId, artMixingLevel, imageUrl) {
+  const response = await fetch(url, {
     method: "POST",
     mode: "cors",
     headers: new Headers({
@@ -11,9 +11,9 @@ function createArtJob(url, artStyleId, artMixingLevel, imageUrl) {
       imgUrl: imageUrl,
       styles: [{ id: artStyleId, mixingLevel: artMixingLevel }]
     })
-  }).then(function(response) {
-    return response.json();
   });
+
+  return response.json();
 }
 
 function waitForJob(url) {
@@ -126,30 +126,29 @@ const BuildModel = types
       self.criticalError = message;
     },
 
-    build() {
+    build: flow(function* asyncBuild() {
       if (!self.isValidForm) {
         self.showError = true;
       } else {
         self.state = "building";
         self.showError = false;
 
-        createArtJob(
-          self.createArtJobUrl,
-          self.selectedStyle,
-          self.mixingLevel,
-          self.originImageUrl
-        )
-          .then(response => {
-            return waitForJob(self.queryArtJobUrl(response.jobId));
-          })
-          .then(response => {
-            self.succeed(response.outputUrls[0]);
-          })
-          .catch(error => {
-            self.fail(error.message || error);
-          });
+        try {
+          const { jobId } = yield createArtJob(
+            self.createArtJobUrl,
+            self.selectedStyle,
+            self.mixingLevel,
+            self.originImageUrl
+          );
+
+          const { outputUrls } = yield waitForJob(self.queryArtJobUrl(jobId));
+
+          self.succeed(outputUrls[0]);
+        } catch (error) {
+          self.fail(error.message || error);
+        }
       }
-    },
+    }),
 
     reset() {
       self.state = "form";
