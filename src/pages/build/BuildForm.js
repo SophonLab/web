@@ -44,7 +44,6 @@ export default function BuildForm({
             {...formItemLayout}
           >
             <Dragger
-              multiple={false}
               action={uploadUrl}
               name="image"
               onChange={({ file }) => {
