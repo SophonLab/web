@@ -13,6 +13,7 @@ import cases from "./cases.json";
 import { encode, decode } from "base64url";
 
 const rootDebug = debug("web:model:root");
+const historyDebug = debug("web:history");
 
 const Identity = types.model("Identity", {
   accessToken: types.string
@@ -105,6 +106,14 @@ const RootModel = types
 
     signOutUrl() {
       return signOutUrl(self.config.clientId);
+    },
+
+    get fetch() {
+      return getEnv(self).fetch;
+    },
+
+    get history() {
+      return getEnv(self).history;
     }
   }))
   .actions(self => ({
@@ -116,7 +125,7 @@ const RootModel = types
     },
 
     pushUrl(url, state = {}) {
-      getEnv(self).history.push(url, state);
+      self.history.push(url, state);
     },
 
     setIdentity(accessToken) {
@@ -141,7 +150,7 @@ const RootModel = types
       if (snapshot) {
         rootDebug("Restoring:", snapshot);
 
-        getEnv(self).history.replace(snapshot.location);
+        self.history.replace(snapshot.location);
 
         self.location = snapshot.location;
         self.pages = snapshot.pages;
@@ -203,6 +212,25 @@ const RootModel = types
 
         self.location = newLocation;
       }
+    }
+  }))
+  .actions(self => ({
+    afterCreate() {
+      rootDebug("initializing history");
+
+      self.history.listen((location, action) => {
+        // location is an object like window.location
+        historyDebug(
+          "Received new history change",
+          action,
+          location.pathname,
+          location.state
+        );
+
+        self.route(location);
+      });
+
+      self.route(self.history.location);
     }
   }));
 
