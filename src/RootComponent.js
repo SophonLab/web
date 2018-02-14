@@ -19,7 +19,10 @@ const RenderContent = ({ model }) => {
     return <HowComponent model={model.pages["/how"]} />;
   } else if (model.pages["/build"]) {
     return (
-      <RequireIdentity model={model}>
+      <RequireIdentity
+        hasIdentity={model.hasIdentity()}
+        signInUrl={model.signInUrl()}
+      >
         <BuildComponent model={model.pages["/build"]} />
       </RequireIdentity>
     );

@@ -27,6 +27,19 @@ export function signInUrl(clientId, state) {
   );
 }
 
+export function refreshAccessTokenUrl(clientId, state) {
+  return (
+    `https://${AUTH0_TENANT_NAME}.auth0.com/authorize?` +
+    [
+      `redirect_uri=${getCallbackUrlPrefix()}/in`,
+      "response_type=token",
+      `client_id=${clientId}`,
+      "prompt=none",
+      `state=${state}`
+    ].join("&")
+  );
+}
+
 export function signOutUrl(clientId) {
   return (
     `https://${AUTH0_TENANT_NAME}.auth0.com/v2/logout?` +

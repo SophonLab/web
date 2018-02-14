@@ -21,11 +21,19 @@ export default function BuildForm({
   onSetMixingLevel,
   onBuild,
   onUploadSucceed,
-  onUploadReset
+  onUploadReset,
+  onRandomToken,
+  accessToken
 }) {
   return (
     <Section>
-      <SectionSlogan>Build Your Photo Into An Artwork</SectionSlogan>
+      <SectionSlogan
+        onClick={() => {
+          onRandomToken();
+        }}
+      >
+        Build Your Photo Into An Artwork
+      </SectionSlogan>
       <Spin
         size="large"
         tip="Working hard to build the art work..."
@@ -46,6 +54,9 @@ export default function BuildForm({
             <Dragger
               action={uploadUrl}
               name="image"
+              headers={{
+                Authorization: `Bearer ${accessToken}`
+              }}
               onChange={({ file }) => {
                 if (file.status === "done") {
                   onUploadSucceed(file.response.imgUrl);

@@ -11,7 +11,7 @@ const model = RootModel.create(
   {
     config: {
       clientId: "phMSpc6uBLJan39hueeMSbIJIJuJFIr0",
-      apiBase: "https://ur2mz26vge.execute-api.us-west-2.amazonaws.com/auth"
+      apiBase: "https://k8ikc1jm80.execute-api.us-west-2.amazonaws.com/beta"
     }
   },
   {

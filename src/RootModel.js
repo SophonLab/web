@@ -1,8 +1,17 @@
-import { types, getEnv, getSnapshot } from "mobx-state-tree";
+import {
+  types,
+  getEnv,
+  getParent,
+  getSnapshot,
+  onAction,
+  applyAction,
+  flow
+} from "mobx-state-tree";
 import debug from "debug";
 import { find } from "lodash";
 import { getAttrFromHash } from "./utils/hash";
-import { signInUrl, signOutUrl } from "./utils/auth";
+import { signInUrl, signOutUrl, refreshAccessTokenUrl } from "./utils/auth";
+import { hangForever } from "./utils/promise";
 import IndexModel from "./pages/index/IndexModel";
 import BuildModel from "./pages/build/BuildModel";
 import AboutModel from "./pages/about/AboutModel";
@@ -30,14 +39,20 @@ const Location = types.model("Location", {
   hash: types.string
 });
 
-const Pages = types.model("Pages", {
-  "/": types.maybe(IndexModel),
-  "/how": types.maybe(HowModel),
-  "/build": types.maybe(BuildModel),
-  "/pricing": types.maybe(PricingModel),
-  "/about": types.maybe(AboutModel),
-  "/404": types.maybe(NotFoundModel)
-});
+const Pages = types
+  .model("Pages", {
+    "/": types.maybe(IndexModel),
+    "/how": types.maybe(HowModel),
+    "/build": types.maybe(BuildModel),
+    "/pricing": types.maybe(PricingModel),
+    "/about": types.maybe(AboutModel),
+    "/404": types.maybe(NotFoundModel)
+  })
+  .views(self => ({
+    get store() {
+      return getParent(self);
+    }
+  }));
 
 const routeRules = [
   {
@@ -55,9 +70,7 @@ const routeRules = [
   {
     pathname: "/build",
     setup(newLocation, rootModel) {
-      return BuildModel.create({
-        apiBase: rootModel.config.apiBase
-      });
+      return BuildModel.create();
     }
   },
   {
@@ -85,11 +98,17 @@ const RootModel = types
     identity: types.maybe(Identity),
     config: Config,
     location: types.maybe(Location),
-    pages: types.optional(Pages, Pages.create())
+    pages: types.optional(Pages, Pages.create()),
+    lastAction: types.optional(types.frozen, null),
+    pendingFetch: types.optional(types.boolean, false)
   })
   .views(self => ({
     hasIdentity() {
       return self.identity !== null;
+    },
+
+    get accessToken() {
+      return self.identity.accessToken;
     },
 
     stateToBase64() {
@@ -100,16 +119,12 @@ const RootModel = types
       return signInUrl(self.config.clientId, self.stateToBase64());
     },
 
-    registerUrl() {
-      return signInUrl(self.config.clientId, self.stateToBase64());
-    },
-
     signOutUrl() {
       return signOutUrl(self.config.clientId);
     },
 
-    get fetch() {
-      return getEnv(self).fetch;
+    apiUrl(url) {
+      return self.config.apiBase + url;
     },
 
     get history() {
@@ -122,6 +137,60 @@ const RootModel = types
       if (localStorage && localStorage.getItem("accessToken")) {
         self.setIdentity(localStorage.getItem("accessToken"));
       }
+    },
+
+    // a customized fetch with the following abilities
+    //   1. translate relative url to absolute url automatically
+    //   2. supply access token to the request
+    //   3. when 401 refresh access token and retry
+    fetch: flow(function* fetch(url, options = {}) {
+      const originFetch = getEnv(self).fetch;
+
+      const finalUrl = self.config.apiBase + url;
+
+      const finalOptions = {
+        ...options,
+        headers: {
+          ...options.headers,
+          "Content-Type": "text/json",
+          Authorization: `Bearer ${self.identity.accessToken}`
+        },
+        mode: "cors"
+      };
+
+      rootDebug("fetch auth headers", finalOptions.headers);
+
+      self.pendingFetch = true;
+
+      const response = yield originFetch(finalUrl, finalOptions);
+
+      if (response.status === 401) {
+        self.refreshAccessToken();
+
+        // keep hanging here stop further execution;
+        return yield hangForever();
+      }
+
+      self.pendingFetch = false;
+
+      return response;
+    }),
+
+    testToken() {
+      self.identity.accessToken = "123";
+    },
+
+    refreshAccessToken() {
+      rootDebug("redirect to authentication page");
+
+      window.location = refreshAccessTokenUrl(
+        self.config.clientId,
+        self.stateToBase64()
+      );
+    },
+
+    setLastAction(action) {
+      self.lastAction = action;
     },
 
     pushUrl(url, state = {}) {
@@ -154,6 +223,14 @@ const RootModel = types
 
         self.location = snapshot.location;
         self.pages = snapshot.pages;
+        self.pendingFetch = snapshot.pendingFetch;
+        self.lastAction = snapshot.lastAction;
+
+        if (snapshot.pendingFetch) {
+          rootDebug("Applying last action:", snapshot.lastAction);
+
+          applyAction(self, snapshot.lastAction);
+        }
       }
     },
 
@@ -231,6 +308,11 @@ const RootModel = types
       });
 
       self.route(self.history.location);
+
+      onAction(self, call => {
+        rootDebug("last action: ", call);
+        self.setLastAction(call);
+      });
     }
   }));
 

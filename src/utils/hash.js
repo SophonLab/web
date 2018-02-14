@@ -15,3 +15,21 @@ export function getAttrFromHash(hash, attribute) {
     return null;
   }
 }
+
+function getHashFromUrl(url) {
+  if (url.indexOf("#") > 0) {
+    return url.substring(url.indexOf("#") + 1);
+  } else {
+    return null;
+  }
+}
+
+export function getAttrFromUrl(url, attribute) {
+  const hash = getHashFromUrl(url);
+
+  if (hash) {
+    return getAttrFromHash(hash, attribute);
+  } else {
+    return null;
+  }
+}

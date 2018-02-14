@@ -2,8 +2,8 @@ import React from "react";
 import { Section } from ".";
 import { Row, Button, Icon, Alert } from "antd";
 
-export default ({ model, children }) => {
-  if (model.hasIdentity()) {
+export default ({ hasIdentity, signInUrl, children }) => {
+  if (hasIdentity) {
     return children;
   } else {
     return (
@@ -19,7 +19,7 @@ export default ({ model, children }) => {
             size="large"
             onClick={event => {
               event.preventDefault();
-              window.location.href = model.signInUrl();
+              window.location.href = signInUrl;
             }}
           >
             <Icon type="user" />Sign In / Register

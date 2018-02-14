@@ -28,6 +28,8 @@ export default observer(function BuildComponent({ model }) {
         onBuild={model.build}
         onUploadSucceed={model.setOriginImageUrl}
         onUploadReset={model.resetOriginImageUrl}
+        accessToken={model.accessToken}
+        onRandomToken={model.setRandomToken}
       />
     );
   }

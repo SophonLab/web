@@ -1,22 +1,35 @@
-import { types, flow } from "mobx-state-tree";
+import { types, flow, getParent } from "mobx-state-tree";
+import debug from "debug";
 
-async function createArtJob(url, artStyleId, artMixingLevel, imageUrl) {
-  const response = await fetch(url, {
-    method: "POST",
-    mode: "cors",
-    headers: new Headers({
-      "Content-Type": "text/json"
-    }),
-    body: JSON.stringify({
-      imgUrl: imageUrl,
-      styles: [{ id: artStyleId, mixingLevel: artMixingLevel }]
-    })
-  });
+const buildDebug = debug("web:model:build");
 
-  return response.json();
+async function createArt(fetch, artStyleId, artMixingLevel, imageUrl) {
+  try {
+    const response = await fetch("/art", {
+      method: "POST",
+      body: JSON.stringify({
+        imgUrl: imageUrl,
+        styles: [{ id: artStyleId, mixingLevel: artMixingLevel }]
+      })
+    });
+
+    if (response.status === 200) {
+      return response.json();
+    } else {
+      return Promise.reject(
+        new Error(
+          "create art job fail, http response code is " + response.status
+        )
+      );
+    }
+  } catch (error) {
+    buildDebug("create art job error: ", error);
+
+    return Promise.reject(error);
+  }
 }
 
-function waitForJob(url) {
+function waitForArt(fetch, jobId) {
   return new Promise(function(resolve, reject) {
     let check = null;
     let timeout = null;
@@ -27,16 +40,11 @@ function waitForJob(url) {
     }, 60000);
 
     check = setInterval(function() {
-      fetch(url, {
-        mode: "cors",
-        headers: new Headers({
-          "Content-Type": "text/json"
-        })
-      })
+      fetch(`/art/${jobId}`)
         .then(function(response) {
           return response.json();
         })
-        .then(function(job) {
+        .then(job => {
           if (job.status === "finished") {
             clearInterval(check);
             clearTimeout(timeout);
@@ -46,10 +54,12 @@ function waitForJob(url) {
             clearInterval(check);
             clearTimeout(timeout);
 
-            reject("Job failed. Please contact us. Job Url is " + url);
+            reject(`Job #${jobId} failed. Please contact us.`);
           }
         })
-        .catch(function() {
+        .catch(error => {
+          buildDebug("wait for job error: ", error);
+
           clearInterval(check);
           clearTimeout(timeout);
 
@@ -61,7 +71,6 @@ function waitForJob(url) {
 
 const BuildModel = types
   .model("BuildModel", {
-    apiBase: types.string,
     selectedStyle: types.maybe(types.string),
     mixingLevel: types.optional(types.string, "mid"),
     state: types.optional(
@@ -71,20 +80,15 @@ const BuildModel = types
     styledImageUrl: types.maybe(types.string),
     showError: types.optional(types.boolean, false),
     criticalError: types.maybe(types.string),
-    jobId: types.maybe(types.string),
     originImageUrl: types.maybe(types.string)
   })
   .views(self => ({
+    get store() {
+      return getParent(self).store;
+    },
+
     get uploadUrl() {
-      return self.apiBase + "/api/v1/image";
-    },
-
-    get createArtJobUrl() {
-      return self.apiBase + "/api/v1/art/";
-    },
-
-    queryArtJobUrl(jobId) {
-      return self.apiBase + "/api/v1/art/" + jobId;
+      return self.store.apiUrl("/image");
     },
 
     get isValidForm() {
@@ -97,9 +101,17 @@ const BuildModel = types
 
     get isBuilt() {
       return self.state === "built";
+    },
+
+    get accessToken() {
+      return self.store.accessToken;
     }
   }))
   .actions(self => ({
+    setRandomToken() {
+      self.store.testToken();
+    },
+
     setSelectedStyle(selectedStyle) {
       self.selectedStyle = selectedStyle;
     },
@@ -134,17 +146,19 @@ const BuildModel = types
         self.showError = false;
 
         try {
-          const { jobId } = yield createArtJob(
-            self.createArtJobUrl,
+          const { jobId } = yield createArt(
+            self.store.fetch,
             self.selectedStyle,
             self.mixingLevel,
             self.originImageUrl
           );
 
-          const { outputUrls } = yield waitForJob(self.queryArtJobUrl(jobId));
+          const { outputUrls } = yield waitForArt(self.store.fetch, jobId);
 
           self.succeed(outputUrls[0]);
         } catch (error) {
+          buildDebug("build error: ", error);
+
           self.fail(error.message || error);
         }
       }
