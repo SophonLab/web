@@ -100,7 +100,7 @@ const RootModel = types
     location: types.maybe(Location),
     pages: types.optional(Pages, Pages.create()),
     lastAction: types.optional(types.frozen, null),
-    pendingFetch: types.optional(types.boolean, false)
+    numberOfRetries: types.optional(types.number, 0)
   })
   .views(self => ({
     hasIdentity() {
@@ -160,18 +160,17 @@ const RootModel = types
 
       rootDebug("fetch auth headers", finalOptions.headers);
 
-      self.pendingFetch = true;
-
       const response = yield originFetch(finalUrl, finalOptions);
 
       if (response.status === 401) {
+        self.setRetryFlag();
         self.refreshAccessToken();
 
         // keep hanging here stop further execution;
         return yield hangForever();
+      } else {
+        self.clearRetryFlag();
       }
-
-      self.pendingFetch = false;
 
       return response;
     }),
@@ -183,6 +182,14 @@ const RootModel = types
         self.config.clientId,
         self.stateToBase64()
       );
+    },
+
+    setRetryFlag() {
+      self.numberOfRetries = self.numberOfRetries + 1;
+    },
+
+    clearRetryFlag() {
+      self.numberOfRetries = 0;
     },
 
     setLastAction(action) {
@@ -219,10 +226,11 @@ const RootModel = types
 
         self.location = snapshot.location;
         self.pages = snapshot.pages;
-        self.pendingFetch = snapshot.pendingFetch;
+        self.numberOfRetries = snapshot.numberOfRetries;
         self.lastAction = snapshot.lastAction;
 
-        if (snapshot.pendingFetch) {
+        if (snapshot.numberOfRetries === 1) {
+          // avoid too many retries, should try only once
           rootDebug("Applying last action:", snapshot.lastAction);
 
           applyAction(self, snapshot.lastAction);
