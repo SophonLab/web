@@ -8,7 +8,7 @@ export default observer(function BuildComponent({ model }) {
     return (
       <BuildResult
         styled={model.styledImageUrl}
-        style={`/style-images/${model.selectedStyle}.jpg`}
+        style={model.previewStyleImageUrl}
         origin={model.originImageUrl}
         onBuildAgain={model.reset}
       />
@@ -17,19 +17,25 @@ export default observer(function BuildComponent({ model }) {
     return (
       <BuildForm
         isBuilding={model.isBuilding}
+        onBuild={model.build}
         showError={model.showError}
         criticalError={model.criticalError}
-        originImageId={model.originImageId}
-        mixingLevel={model.mixingLevel}
-        selectedStyle={model.selectedStyle}
-        uploadUrl={model.uploadUrl}
-        onSetSelectedStyle={model.setSelectedStyle}
-        onSetMixingLevel={model.setMixingLevel}
-        onBuild={model.build}
-        onUploadSucceed={model.setOriginImageUrl}
-        onUploadReset={model.resetOriginImageUrl}
         accessToken={model.accessToken}
-        onRandomToken={model.setRandomToken}
+        uploadUrl={model.uploadUrl}
+        originImageUrl={model.originImageUrl}
+        onOriginalImageUploadSucceed={model.setOriginImageUrl}
+        onOriginalImageUploadFailed={model.refreshAccessToken}
+        onOriginalImageUploadReset={model.resetOriginImageUrl}
+        mixingLevel={model.mixingLevel}
+        onSetMixingLevel={model.setMixingLevel}
+        styleType={model.styleType}
+        onStyleTypeChange={model.changeStyleType}
+        styleImageUrl={model.styleImageUrl}
+        onStyleImageUploadSucceed={model.setStyleImageUrl}
+        onStyleImageUploadFailed={model.refreshAccessToken}
+        onStyleImageUploadReset={model.resetStyleImageUrl}
+        selectedStyle={model.selectedStyle}
+        onSetSelectedStyle={model.setSelectedStyle}
       />
     );
   }

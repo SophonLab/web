@@ -115,29 +115,31 @@ const StyleImage = styled.img`
   padding: 0.1em;
 `;
 
-function StyleCover({ enable, children }) {
+function StyleCover({ enable, children, title }) {
   if (enable) {
     return (
-      <div style={{ position: "relative" }}>
-        <div style={{ opacity: "0.4" }}>{children}</div>
-        <Icon
-          type="check"
-          style={{
-            position: "absolute",
-            top: 0,
-            width: "100px",
-            height: "100px",
-            display: "block",
-            lineHeight: "100px",
-            fontSize: 64,
-            fontWeight: "bold",
-            color: "green"
-          }}
-        />
-      </div>
+      <Tooltip title={title}>
+        <div style={{ position: "relative" }}>
+          <div style={{ opacity: "0.5" }}>{children}</div>
+          <Icon
+            type="check"
+            style={{
+              position: "absolute",
+              top: 0,
+              width: "100px",
+              height: "100px",
+              display: "block",
+              lineHeight: "100px",
+              fontSize: 64,
+              fontWeight: "bold",
+              color: "green"
+            }}
+          />
+        </div>
+      </Tooltip>
     );
   } else {
-    return children;
+    return <Tooltip title={title}>{children}</Tooltip>;
   }
 }
 
@@ -147,15 +149,18 @@ function humanize(style) {
 
 function StyleChooseImage({ style, selected, onClick }) {
   return (
-    <StyleCover enable={selected}>
-      <Tooltip title={humanize(style)}>
-        <Card
-          hoverable
-          style={{ width: 100 }}
-          cover={<StyleImage src={`/style-images/${style}.jpg`} alt={style} />}
-          onClick={onClick}
-        />
-      </Tooltip>
+    <StyleCover enable={selected} title={humanize(style)}>
+      <Card
+        hoverable
+        style={{
+          width: 100,
+          padding: "8px",
+          border: "1px dashed #ccc",
+          borderRadius: "4px"
+        }}
+        cover={<StyleImage src={`/style-images/${style}.jpg`} alt={style} />}
+        onClick={onClick}
+      />
     </StyleCover>
   );
 }

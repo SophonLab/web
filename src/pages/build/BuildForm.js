@@ -1,39 +1,61 @@
 import React from "react";
 import StyleChooser from "./StyleChooser";
 import { Section, SectionSlogan } from "../../elements";
-import { Button, Upload, Icon, Form, Radio, Tooltip, Spin, Alert } from "antd";
-const Dragger = Upload.Dragger;
+import {
+  Button,
+  Upload,
+  Icon,
+  Form,
+  Radio,
+  Tooltip,
+  Spin,
+  Alert,
+  Tabs,
+  message
+} from "antd";
+import debug from "debug";
+
+const buildDebug = debug("web:component:build");
 
 const formItemLayout = {
   labelCol: { span: 6 },
   wrapperCol: { span: 14 }
 };
 
+function UploadButton() {
+  return (
+    <div>
+      <Icon type="plus" />
+      <div className="ant-upload-text">Upload</div>
+    </div>
+  );
+}
+
 export default function BuildForm({
   isBuilding,
+  onBuild,
   showError,
   criticalError,
+  accessToken,
   uploadUrl,
-  originImageId,
+  originImageUrl,
+  onOriginalImageUploadSucceed,
+  onOriginalImageUploadFailed,
+  onOriginalImageUploadReset,
+  styleType,
+  onStyleTypeChange,
+  styleImageUrl,
+  onStyleImageUploadSucceed,
+  onStyleImageUploadFailed,
+  onStyleImageUploadReset,
   selectedStyle,
   onSetSelectedStyle,
   mixingLevel,
-  onSetMixingLevel,
-  onBuild,
-  onUploadSucceed,
-  onUploadReset,
-  onRandomToken,
-  accessToken
+  onSetMixingLevel
 }) {
   return (
     <Section>
-      <SectionSlogan
-        onClick={() => {
-          onRandomToken();
-        }}
-      >
-        Build Your Photo Into An Artwork
-      </SectionSlogan>
+      <SectionSlogan>Build Your Photo Into An Artwork</SectionSlogan>
       <Spin
         size="large"
         tip="Working hard to build the art work..."
@@ -47,43 +69,117 @@ export default function BuildForm({
           )}
           <Form.Item
             label="Photo"
-            validationStatus={originImageId ? "success" : "error"}
-            help={showError && !originImageId ? "Please choose an image" : null}
+            validationStatus={originImageUrl ? "success" : "error"}
+            help={
+              showError && !originImageUrl ? "Please choose an image" : null
+            }
             {...formItemLayout}
           >
-            <Dragger
+            <Upload
               action={uploadUrl}
               name="image"
               headers={{
                 Authorization: `Bearer ${accessToken}`
               }}
+              listType="picture-card"
+              className="avatar-uploader"
+              showUploadList={false}
               onChange={({ file }) => {
+                buildDebug("on original image change", file);
+
                 if (file.status === "done") {
-                  onUploadSucceed(file.response.imgUrl);
+                  onOriginalImageUploadSucceed(file.response.imgUrl);
+                } else if (file.status === "error") {
+                  message.warning(
+                    "Your session is expired, current page will be refreshed automatically in a few seconds to acquire a new session for you. Please retry upload when you're back here."
+                  );
+                  setTimeout(onOriginalImageUploadFailed, 5000);
                 }
               }}
               onRemove={file => {
-                onUploadReset();
+                onOriginalImageUploadReset();
               }}
             >
-              <p className="ant-upload-drag-icon">
-                <Icon type="picture" />
-              </p>
-              <p className="ant-upload-text">
-                Click or drag file to this area to upload
-              </p>
-            </Dragger>
+              {originImageUrl ? (
+                <img
+                  src={originImageUrl}
+                  alt="Original"
+                  style={{ width: "100%" }}
+                />
+              ) : (
+                <UploadButton />
+              )}
+            </Upload>
           </Form.Item>
           <Form.Item
             label="Style"
             validationStatus={selectedStyle ? "success" : "error"}
-            help={showError && !selectedStyle ? "Please choose a style" : ""}
+            help={
+              showError && ((styleType === 'system' && selectedStyle === null) || (styleType === 'custom' && styleImageUrl === null))
+                ? "Please choose a style"
+                : ""
+            }
             {...formItemLayout}
           >
-            <StyleChooser
-              selectedStyle={selectedStyle}
-              onStyleClick={onSetSelectedStyle}
-            />
+            <Tabs activeKey={styleType} onChange={onStyleTypeChange}>
+              <Tabs.TabPane
+                tab={
+                  <span>
+                    <Icon type="database" />Predefined
+                  </span>
+                }
+                key="system"
+              >
+                <StyleChooser
+                  selectedStyle={selectedStyle}
+                  onStyleClick={onSetSelectedStyle}
+                />
+              </Tabs.TabPane>
+              <Tabs.TabPane
+                tab={
+                  <span>
+                    <Icon type="heart-o" />Your Own
+                  </span>
+                }
+                key="custom"
+              >
+                <Upload
+                  action={uploadUrl}
+                  name="image"
+                  headers={{
+                    Authorization: `Bearer ${accessToken}`
+                  }}
+                  listType="picture-card"
+                  className="avatar-uploader"
+                  showUploadList={false}
+                  onChange={({ file }) => {
+                    buildDebug("on style image change", file);
+
+                    if (file.status === "done") {
+                      onStyleImageUploadSucceed(file.response.imgUrl);
+                    } else if (file.status === "error") {
+                      message.warning(
+                        "Your session is expired, current page will be refreshed automatically in a few seconds to acquire a new session for you. Please retry upload when you're back here."
+                      );
+                      setTimeout(onStyleImageUploadFailed, 5000);
+                    }
+                  }}
+                  onRemove={file => {
+                    onStyleImageUploadReset();
+                  }}
+                >
+                  {styleImageUrl ? (
+                    <img
+                      src={styleImageUrl}
+                      alt="Style"
+                      style={{ width: "100%" }}
+                    />
+                  ) : (
+                    <UploadButton />
+                  )}
+                </Upload>
+              </Tabs.TabPane>
+            </Tabs>
           </Form.Item>
           <Form.Item
             label={

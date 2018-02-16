@@ -3,13 +3,65 @@ import debug from "debug";
 
 const buildDebug = debug("web:model:build");
 
-async function createArt(fetch, artStyleId, artMixingLevel, imageUrl) {
+async function createFastStyleArt(
+  fetch,
+  contentImageUrl,
+  artStyleId,
+  artMixingLevel
+) {
   try {
     const response = await fetch("/art", {
       method: "POST",
       body: JSON.stringify({
-        imgUrl: imageUrl,
+        imgUrl: contentImageUrl,
         styles: [{ id: artStyleId, mixingLevel: artMixingLevel }]
+      })
+    });
+
+    if (response.status === 200) {
+      return response.json();
+    } else {
+      return Promise.reject(
+        new Error(
+          "create art job fail, http response code is " + response.status
+        )
+      );
+    }
+  } catch (error) {
+    buildDebug("create art job error: ", error);
+
+    return Promise.reject(error);
+  }
+}
+
+function mapMixingLevelToAlpha(level) {
+  if (level === "low") {
+    return 0.1;
+  } else if (level === "mid") {
+    return 0.4;
+  } else {
+    return 0.8;
+  }
+}
+
+async function createWCTFastStyleArt(
+  fetch,
+  contentImageUrl,
+  styleImageUrl,
+  artMixingLevel
+) {
+  try {
+    const response = await fetch("/art", {
+      method: "POST",
+      body: JSON.stringify({
+        WctFastStyleSpec: {
+          contentImageUrl,
+          styleImageUrl,
+          styleDepth: 3,
+          styleScale: 0.6,
+          alpha: mapMixingLevelToAlpha(artMixingLevel),
+          outputSize: 800 // hard code for now
+        }
       })
     });
 
@@ -37,7 +89,7 @@ function waitForArt(fetch, jobId) {
     timeout = setTimeout(function() {
       reject("Timed out. Server might be too busy, please try again later");
       clearInterval(check);
-    }, 60000);
+    }, 120000);
 
     check = setInterval(function() {
       fetch(`/art/${jobId}`)
@@ -65,14 +117,16 @@ function waitForArt(fetch, jobId) {
 
           reject("Server error. Please contact us.");
         });
-    }, 3000);
+    }, 8000);
   });
 }
 
 const BuildModel = types
   .model("BuildModel", {
-    selectedStyle: types.maybe(types.string),
-    mixingLevel: types.optional(types.string, "mid"),
+    mixingLevel: types.optional(
+      types.enumeration("MixinLevel", ["low", "mid", "high"]),
+      "mid"
+    ),
     state: types.optional(
       types.enumeration("State", ["form", "building", "built"]),
       "form"
@@ -80,7 +134,13 @@ const BuildModel = types
     styledImageUrl: types.maybe(types.string),
     showError: types.optional(types.boolean, false),
     criticalError: types.maybe(types.string),
-    originImageUrl: types.maybe(types.string)
+    originImageUrl: types.maybe(types.string),
+    styleType: types.optional(
+      types.enumeration("StyleType", ["system", "custom"]),
+      "system"
+    ),
+    selectedStyle: types.maybe(types.string),
+    styleImageUrl: types.maybe(types.string)
   })
   .views(self => ({
     get store() {
@@ -92,7 +152,11 @@ const BuildModel = types
     },
 
     get isValidForm() {
-      return self.originImageUrl && self.selectedStyle;
+      return (
+        self.originImageUrl &&
+        ((self.styleType === "system" && self.selectedStyle) ||
+          (self.styleType === "custom" && self.styleImageUrl))
+      );
     },
 
     get isBuilding() {
@@ -105,27 +169,47 @@ const BuildModel = types
 
     get accessToken() {
       return self.store.accessToken;
+    },
+
+    get previewStyleImageUrl() {
+      if (self.styleType === "system") {
+        return `/style-images/${self.selectedStyle}.jpg`;
+      } else {
+        return self.styleImageUrl;
+      }
     }
   }))
   .actions(self => ({
-    setRandomToken() {
-      self.store.testToken();
-    },
-
-    setSelectedStyle(selectedStyle) {
-      self.selectedStyle = selectedStyle;
-    },
-
-    setMixingLevel(mixingLevel) {
-      self.mixingLevel = mixingLevel;
-    },
-
     setOriginImageUrl(imageUrl) {
       self.originImageUrl = imageUrl;
     },
 
     resetOriginImageUrl() {
       self.originImageUrl = null;
+    },
+
+    setSelectedStyle(selectedStyle) {
+      self.selectedStyle = selectedStyle;
+    },
+
+    changeStyleType(type) {
+      self.styleType = type;
+    },
+
+    setStyleImageUrl(imageUrl) {
+      self.styleImageUrl = imageUrl;
+    },
+
+    resetStyleImageUrl() {
+      self.styleImageUrl = null;
+    },
+
+    setMixingLevel(mixingLevel) {
+      self.mixingLevel = mixingLevel;
+    },
+
+    refreshAccessToken() {
+      self.store.refreshAccessToken();
     },
 
     succeed(styledImageUrl) {
@@ -146,12 +230,25 @@ const BuildModel = types
         self.showError = false;
 
         try {
-          const { jobId } = yield createArt(
-            self.store.fetch,
-            self.selectedStyle,
-            self.mixingLevel,
-            self.originImageUrl
-          );
+          let artResponse = null;
+
+          if (self.styleType === "system") {
+            artResponse = yield createFastStyleArt(
+              self.store.fetch,
+              self.originImageUrl,
+              self.selectedStyle,
+              self.mixingLevel
+            );
+          } else {
+            artResponse = yield createWCTFastStyleArt(
+              self.store.fetch,
+              self.originImageUrl,
+              self.styleImageUrl,
+              self.mixingLevel
+            );
+          }
+
+          const { jobId } = artResponse;
 
           const { outputUrls } = yield waitForArt(self.store.fetch, jobId);
 
@@ -168,7 +265,6 @@ const BuildModel = types
       self.state = "form";
       self.showError = false;
       self.criticalError = null;
-      self.originImageUrl = null;
       self.selectedStyle = null;
       self.styledImageUrl = null;
     }

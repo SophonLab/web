@@ -31,6 +31,7 @@ export function refreshAccessTokenUrl(clientId, state) {
   return (
     `https://${AUTH0_TENANT_NAME}.auth0.com/authorize?` +
     [
+      `scope=openid%20profile%20email`,
       `redirect_uri=${getCallbackUrlPrefix()}/in`,
       "response_type=token",
       `client_id=${clientId}`,

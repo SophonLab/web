@@ -176,10 +176,6 @@ const RootModel = types
       return response;
     }),
 
-    testToken() {
-      self.identity.accessToken = "123";
-    },
-
     refreshAccessToken() {
       rootDebug("redirect to authentication page");
 
