@@ -6,6 +6,7 @@ import Footer from "./FooterComponent";
 import IndexComponent from "./pages/index/IndexComponent";
 import AboutComponent from "./pages/about/AboutComponent";
 import PricingComponent from "./pages/pricing/PricingComponent";
+import PrivacyComponent from "./pages/privacy/PrivacyComponent";
 import HowComponent from "./pages/how/HowComponent";
 import BuildComponent from "./pages/build/BuildComponent";
 import NotFoundComponent from "./pages/not-found/NotFoundComponent";
@@ -28,6 +29,8 @@ const RenderContent = ({ model }) => {
     );
   } else if (model.pages["/pricing"]) {
     return <PricingComponent model={model.pages["/pricing"]} />;
+  } else if (model.pages["/privacy"]) {
+    return <PrivacyComponent model={model.pages["/privacy"]} />;
   } else if (model.pages["/about"]) {
     return <AboutComponent model={model.pages["/about"]} />;
   } else if (model.pages["/404"]) {
@@ -40,11 +43,11 @@ const RenderContent = ({ model }) => {
 export default observer(({ model }) => {
   return (
     <Layout>
-      <Header model={model} showSlogan={model.pages["/"]} />
+      <Header model={model} showSlogan={!!model.pages["/"]} />
       <Content style={{ background: "#fff" }}>
         <RenderContent model={model} />
       </Content>
-      <Footer identity={model.identity} />
+      <Footer identity={model.identity} pushUrl={model.pushUrl} />
     </Layout>
   );
 });

@@ -18,6 +18,7 @@ import AboutModel from "./pages/about/AboutModel";
 import HowModel from "./pages/how/HowModel";
 import NotFoundModel from "./pages/not-found/NotFoundModel";
 import PricingModel from "./pages/pricing/PricingModel";
+import PrivacyModel from "./pages/privacy/PrivacyModel";
 import cases from "./cases.json";
 import { encode, decode } from "base64url";
 
@@ -46,6 +47,7 @@ const Pages = types
     "/build": types.maybe(BuildModel),
     "/pricing": types.maybe(PricingModel),
     "/about": types.maybe(AboutModel),
+    "/privacy": types.maybe(PrivacyModel),
     "/404": types.maybe(NotFoundModel)
   })
   .views(self => ({
@@ -77,6 +79,12 @@ const routeRules = [
     pathname: "/pricing",
     setup() {
       return PricingModel.create();
+    }
+  },
+  {
+    pathname: "/privacy",
+    setup() {
+      return PrivacyModel.create();
     }
   },
   {
