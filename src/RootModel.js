@@ -19,7 +19,6 @@ import HowModel from "./pages/how/HowModel";
 import NotFoundModel from "./pages/not-found/NotFoundModel";
 import PricingModel from "./pages/pricing/PricingModel";
 import PrivacyModel from "./pages/privacy/PrivacyModel";
-import cases from "./cases.json";
 import { encode, decode } from "base64url";
 
 const rootDebug = debug("web:model:root");
@@ -60,7 +59,7 @@ const routeRules = [
   {
     pathname: "/",
     setup() {
-      return IndexModel.create({ cases });
+      return IndexModel.create();
     }
   },
   {
@@ -161,7 +160,11 @@ const RootModel = types
         headers: {
           ...options.headers,
           "Content-Type": "text/json",
-          Authorization: `Bearer ${self.identity.accessToken}`
+          ...(options.skipAuth
+            ? {}
+            : {
+                Authorization: `Bearer ${self.identity.accessToken}`
+              })
         },
         mode: "cors"
       };
