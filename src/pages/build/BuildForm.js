@@ -115,7 +115,9 @@ export default function BuildForm({
             label="Style"
             validationStatus={selectedStyle ? "success" : "error"}
             help={
-              showError && ((styleType === 'system' && selectedStyle === null) || (styleType === 'custom' && styleImageUrl === null))
+              showError &&
+              ((styleType === "system" && selectedStyle === null) ||
+                (styleType === "custom" && styleImageUrl === null))
                 ? "Please choose a style"
                 : ""
             }

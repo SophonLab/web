@@ -4,14 +4,20 @@ import { Button } from "antd";
 import { split, last } from "lodash";
 
 export function downloadName(styled, style) {
-  const styledFilename = last(split(styled, '/'));
+  const styledFilename = last(split(styled, "/"));
 
-  const styledExtension = last(split(styledFilename, '.'));
-  const styledName = styledFilename.substring(0, styledFilename.length - styledExtension.length - 1);
+  const styledExtension = last(split(styledFilename, "."));
+  const styledName = styledFilename.substring(
+    0,
+    styledFilename.length - styledExtension.length - 1
+  );
 
-  const styleFilename = last(split(style, '/'));
-  const styleExtension = last(split(styleFilename, '.'));
-  const styleName = styleFilename.substring(0, styleFilename.length - styleExtension.length - 1);
+  const styleFilename = last(split(style, "/"));
+  const styleExtension = last(split(styleFilename, "."));
+  const styleName = styleFilename.substring(
+    0,
+    styleFilename.length - styleExtension.length - 1
+  );
 
   return `${styledName}-${styleName}.${styledExtension}`;
 }

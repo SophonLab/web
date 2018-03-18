@@ -30,8 +30,4 @@ const CASES = [
   }
 ];
 
-storiesOf("Cases", module).add("cases", () => (
-  <div style={{ width: "300px" }}>
-    <Cases cases={CASES} />
-  </div>
-));
+storiesOf("Cases", module).add("cases", () => <Cases cases={CASES} />);

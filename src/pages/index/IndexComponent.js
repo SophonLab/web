@@ -38,18 +38,14 @@ export default observer(function IndexComponent({ model }) {
       </Section>
       <Section>
         <SectionSlogan>Our favorites</SectionSlogan>
-        <SectionLead>
-          Hand picked collection of wonderful arts.
-        </SectionLead>
-        <div style={{display: 'none'}}>{model.featuredArts.length}</div>
+        <SectionLead>Hand picked collection of wonderful arts.</SectionLead>
+        <div style={{ display: "none" }}>{model.featuredArts.length}</div>
         <Cases cases={model.featuredArts} />
       </Section>
       <Section style={{ background: "#ececec" }}>
         <SectionSlogan>Get some inspiration</SectionSlogan>
-        <SectionLead>
-          See what others have created.
-        </SectionLead>
-        <div style={{display: 'none'}}>{model.latestArts.length}</div>
+        <SectionLead>See what others have created.</SectionLead>
+        <div style={{ display: "none" }}>{model.latestArts.length}</div>
         <Cases cases={model.latestArts} />
       </Section>
     </div>
