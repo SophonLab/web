@@ -2,6 +2,7 @@ import React from "react";
 import { Row, Button, Badge, List } from "antd";
 import styled from "styled-components";
 import { media } from "../../utils/css";
+import ProgressiveImage from "react-progressive-image";
 
 const STEPS = [
   {
@@ -62,7 +63,9 @@ function Step({ seq, title, src, alt }) {
         {title}
       </Row>
       <Row>
-        <StepImage src={src} alt={alt} />
+        <ProgressiveImage src={src} placeholder="loader.gif">
+          {source => <StepImage src={source} alt={alt} />}
+        </ProgressiveImage>
       </Row>
     </div>
   );

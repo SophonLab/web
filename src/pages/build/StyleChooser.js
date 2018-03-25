@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Icon, Card, List, Tooltip } from "antd";
 import { replace } from "lodash";
+import ProgressiveImage from "react-progressive-image";
 
 const STYLES = [
   "Autumn",
@@ -158,7 +159,14 @@ function StyleChooseImage({ style, selected, onClick }) {
           border: "1px dashed #ccc",
           borderRadius: "4px"
         }}
-        cover={<StyleImage src={`/style-images/${style}.jpg`} alt={style} />}
+        cover={
+          <ProgressiveImage
+            src={`/style-images/${style}.jpg`}
+            placeholder="loader.gif"
+          >
+            {src => <StyleImage src={src} alt={style} />}
+          </ProgressiveImage>
+        }
         onClick={onClick}
       />
     </StyleCover>

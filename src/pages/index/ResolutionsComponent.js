@@ -2,6 +2,7 @@ import React from "react";
 import { Button, Row, Col } from "antd";
 import styled from "styled-components";
 import { media } from "../../utils/css";
+import ProgressiveImage from "react-progressive-image";
 
 const BgImage = styled.img`
   width: 100%;
@@ -38,7 +39,9 @@ export default ({ model }) => (
   <div style={{ marginTop: "1em" }}>
     <Row>
       <Col span={24}>
-        <BgImage alt="Resolution Background" src="./resolution-bg.jpg" />
+        <ProgressiveImage src="resolution-bg.jpg" placeholder="loader.gif">
+          {src => <BgImage alt="Resolution Background" src={src} />}
+        </ProgressiveImage>
       </Col>
     </Row>
     <Row>
@@ -46,12 +49,9 @@ export default ({ model }) => (
         span={8}
         style={{ background: "#008000", borderRight: "4px solid #ececec" }}
       >
-        <ZoomImage
-          atl="1K"
-          src="./resolution-1k.jpg"
-          width="1176"
-          height="350"
-        />
+        <ProgressiveImage src="resolution-1k.jpg" placeholder="loader.gif">
+          {src => <ZoomImage atl="1K" src={src} width="1176" height="350" />}
+        </ProgressiveImage>
         <CardHeader>1K</CardHeader>
         <CardBody>
           <p>Free!</p>
@@ -77,7 +77,9 @@ export default ({ model }) => (
           borderRight: "2px solid #ececec"
         }}
       >
-        <ZoomImage alt="2K" src="./resolution-2k.jpg" />
+        <ProgressiveImage src="resolution-2k.jpg" placeholder="loader.gif">
+          {src => <ZoomImage alt="2K" src={src} />}
+        </ProgressiveImage>
         <CardHeader>2K</CardHeader>
         <CardBody>
           <p>Contact Us</p>
@@ -87,7 +89,9 @@ export default ({ model }) => (
         span={8}
         style={{ background: "#8B0000", borderLeft: "4px solid #ececec" }}
       >
-        <ZoomImage alt="8K" src="./resolution-8k.jpg" />
+        <ProgressiveImage src="resolution-8k.jpg" placeholder="loader.gif">
+          {src => <ZoomImage alt="8K" src={src} />}
+        </ProgressiveImage>
         <CardHeader>8K</CardHeader>
         <CardBody>
           <p>Contact Us</p>
