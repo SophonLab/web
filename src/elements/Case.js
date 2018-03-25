@@ -1,55 +1,42 @@
 import React from "react";
 import { Row, Col } from "antd";
 import styled from "styled-components";
-import { media } from "../utils/css";
 import ImageZoom from "react-medium-image-zoom";
 
-const OutputImage = styled.div`
+function aspectRatioToPercentage(aspectRatio) {
+  const [w, h] = aspectRatio.split(":");
+
+  return (100 * h / w).toFixed(2) + '%';
+}
+
+const ImageContainer = styled.div`
   width: 100%;
-  height: 14vw;
-
-  ${media.giant`
-    height: 14vw;
-  `};
-
-  ${media.tablet`
-    height: 30vw;
-  `};
-
-  ${media.phone`
-    height: 50vw;
-  `};
+  position: relative;
+  padding-top: ${props =>
+    aspectRatioToPercentage(props.aspectRatio || "16:9")};
+  overflow: hidden;
+  background: #ddd;
 `;
 
-const InputImage = styled.div`
-  width: 100%;
-  height: 7vw;
-
-  ${media.giant`
-    height: 7vw;
-  `};
-
-  ${media.tablet`
-    height: 15vw;
-  `};
-
-  ${media.phone`
-    height: 25vw;
-  `};
-`;
+const contentStyle = {
+  position: "absolute",
+  top: 0,
+  left: 0,
+  bottom: 0,
+  right: 0,
+  width: "100%",
+  margin: "auto"
+};
 
 export default ({ styled, origin, style }) => (
   <div>
     <Row key="styled" style={{ marginBottom: "1px" }}>
       <Col span={24}>
-        <OutputImage>
+        <ImageContainer aspectRatio="16:9">
           <ImageZoom
             image={{
               src: styled,
-              style: {
-                width: "100%",
-                height: "100%"
-              },
+              style: contentStyle,
               alt: "Styled Image"
             }}
             zoomImage={{
@@ -57,19 +44,16 @@ export default ({ styled, origin, style }) => (
               alt: "StyledImage"
             }}
           />
-        </OutputImage>
+        </ImageContainer>
       </Col>
     </Row>
     <Row key="origin">
       <Col span={12} style={{ paddingRight: "1px" }}>
-        <InputImage>
+        <ImageContainer aspectRatio="2:1">
           <ImageZoom
             image={{
               src: origin,
-              style: {
-                width: "100%",
-                height: "100%"
-              },
+              style: contentStyle,
               alt: "Origin Image"
             }}
             zoomImage={{
@@ -77,17 +61,14 @@ export default ({ styled, origin, style }) => (
               alt: "Origin Image"
             }}
           />
-        </InputImage>
+        </ImageContainer>
       </Col>
       <Col span={12} style={{ paddingLeft: "1px" }}>
-        <InputImage>
+        <ImageContainer aspectRatio="2:1">
           <ImageZoom
             image={{
               src: style,
-              style: {
-                width: "100%",
-                height: "100%"
-              },
+              style: contentStyle,
               alt: "Style Image"
             }}
             zoomImage={{
@@ -95,7 +76,7 @@ export default ({ styled, origin, style }) => (
               alt: "Style Image"
             }}
           />
-        </InputImage>
+        </ImageContainer>
       </Col>
     </Row>
   </div>
