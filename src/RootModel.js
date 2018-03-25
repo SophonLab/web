@@ -8,7 +8,7 @@ import {
   flow
 } from "mobx-state-tree";
 import debug from "debug";
-import { find } from "lodash";
+import { find, omit } from "lodash";
 import { getAttrFromHash } from "./utils/hash";
 import { signInUrl, signOutUrl, refreshAccessTokenUrl } from "./utils/auth";
 import { hangForever } from "./utils/promise";
@@ -118,12 +118,14 @@ const RootModel = types
       return self.identity.accessToken;
     },
 
-    stateToBase64() {
-      return encode(JSON.stringify(getSnapshot(self)));
+    get base64State() {
+      return encode(
+        JSON.stringify(omit(getSnapshot(self), "pages", "identity"))
+      );
     },
 
     signInUrl() {
-      return signInUrl(self.config.clientId, self.stateToBase64());
+      return signInUrl(self.config.clientId, self.base64State);
     },
 
     signOutUrl() {
@@ -191,7 +193,7 @@ const RootModel = types
 
       window.location = refreshAccessTokenUrl(
         self.config.clientId,
-        self.stateToBase64()
+        self.base64State
       );
     },
 
@@ -228,24 +230,27 @@ const RootModel = types
     },
 
     restoreFromBase64State(state) {
-      const snapshot = JSON.parse(decode(state));
+      try {
+        const snapshot = JSON.parse(decode(state));
 
-      if (snapshot) {
-        rootDebug("Restoring:", snapshot);
+        if (snapshot) {
+          rootDebug("Restoring:", snapshot);
 
-        self.history.replace(snapshot.location);
+          self.history.replace(snapshot.location);
 
-        self.location = snapshot.location;
-        self.pages = snapshot.pages;
-        self.numberOfRetries = snapshot.numberOfRetries;
-        self.lastAction = snapshot.lastAction;
+          self.location = snapshot.location;
+          self.numberOfRetries = snapshot.numberOfRetries;
+          self.lastAction = snapshot.lastAction;
 
-        if (snapshot.numberOfRetries === 1) {
-          // avoid too many retries, should try only once
-          rootDebug("Applying last action:", snapshot.lastAction);
+          if (snapshot.numberOfRetries === 1) {
+            // avoid too many retries, should try only once
+            rootDebug("Applying last action:", snapshot.lastAction);
 
-          applyAction(self, snapshot.lastAction);
+            applyAction(self, snapshot.lastAction);
+          }
         }
+      } catch (e) {
+        rootDebug("Error restoring from base64:", e);
       }
     },
 
