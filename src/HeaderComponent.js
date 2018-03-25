@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { media } from "./utils/css";
 import { Menu, Icon } from "antd";
 
@@ -10,6 +10,12 @@ const Header = styled.div`
   background: url("./header-bg-small.jpg") no-repeat center center / cover;
 `;
 
+const bounce = keyframes`
+  0% { transform: rotate(-5deg); }
+  50% { transform: rotate(5deg); }
+  100% { transform: rotate(-5deg); }
+`;
+
 const Logo = styled.a`
   display: block;
   font-family: Satisfy;
@@ -17,6 +23,7 @@ const Logo = styled.a`
   padding: 0;
   margin-right: 1em;
   transform: rotate(-5deg);
+  animation: ${bounce} 2s linear infinite;
 
   &:focus {
     text-decoration: none;
@@ -67,6 +74,7 @@ const HeaderNavWrap = styled.div`
   background: #fff;
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-between;
 `;
 
 const HeaderNav = ({ model }) => (
@@ -101,9 +109,6 @@ const HeaderNav = ({ model }) => (
       </Menu.Item>
       <Menu.Item key="/pricing">
         <Icon type="calculator" />Pricing
-      </Menu.Item>
-      <Menu.Item key="/about">
-        <Icon type="bulb" />About
       </Menu.Item>
       {model.hasIdentity() ? (
         <Menu.Item key="/signout">

@@ -47,7 +47,7 @@ export default observer(({ model }) => {
       <Content style={{ background: "#fff" }}>
         <RenderContent model={model} />
       </Content>
-      <Footer identity={model.identity} pushUrl={model.pushUrl} />
+      <Footer pushUrl={model.pushUrl} />
     </Layout>
   );
 });
