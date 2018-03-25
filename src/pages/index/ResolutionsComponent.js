@@ -96,9 +96,11 @@ export default ({ model }) => (
         span={8}
         style={{ background: "#8B0000", borderLeft: "4px solid #ececec" }}
       >
-        <ProgressiveImage src="resolution-8k.jpg" placeholder="loader.gif">
-          {src => <ZoomImage alt="8K" src={src} />}
-        </ProgressiveImage>
+        <LazyLoad offset={100}>
+          <ProgressiveImage src="resolution-8k.jpg" placeholder="loader.gif">
+            {src => <ZoomImage alt="8K" src={src} />}
+          </ProgressiveImage>
+        </LazyLoad>
         <CardHeader>8K</CardHeader>
         <CardBody>
           <p>Contact Us</p>
