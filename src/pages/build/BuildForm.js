@@ -93,7 +93,7 @@ export default function BuildForm({
                   message.warning(
                     "Your session is expired, current page will be refreshed automatically in a few seconds to acquire a new session for you. Please retry upload when you're back here."
                   );
-                  setTimeout(onOriginalImageUploadFailed, 5000);
+                  setTimeout(onOriginalImageUploadFailed, 8000);
                 }
               }}
               onRemove={file => {

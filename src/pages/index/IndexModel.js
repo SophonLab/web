@@ -50,7 +50,7 @@ const IndexModel = types
   })
   .views(self => ({
     get store() {
-      return getParent(self).store;
+      return getParent(self);
     }
   }))
   .actions(self => ({
@@ -80,10 +80,8 @@ const IndexModel = types
   }))
   .actions(self => ({
     afterAttach() {
-      setTimeout(() => {
-        self.loadFeaturedArts();
-        self.loadLatestArts();
-      }, 10);
+      self.loadFeaturedArts();
+      self.loadLatestArts();
     }
   }));
 

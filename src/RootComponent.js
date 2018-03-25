@@ -14,27 +14,27 @@ import { Layout } from "antd";
 const { Content } = Layout;
 
 const RenderContent = ({ model }) => {
-  if (model.pages["/"]) {
-    return <IndexComponent model={model.pages["/"]} />;
-  } else if (model.pages["/how"]) {
-    return <HowComponent model={model.pages["/how"]} />;
-  } else if (model.pages["/build"]) {
+  if (model.location.pathname === "/") {
+    return <IndexComponent model={model.page} />;
+  } else if (model.location.pathname === "/how") {
+    return <HowComponent model={model.page} />;
+  } else if (model.location.pathname === "/build") {
     return (
       <RequireIdentity
         hasIdentity={model.hasIdentity()}
         signInUrl={model.signInUrl()}
       >
-        <BuildComponent model={model.pages["/build"]} />
+        <BuildComponent model={model.page} />
       </RequireIdentity>
     );
-  } else if (model.pages["/pricing"]) {
-    return <PricingComponent model={model.pages["/pricing"]} />;
-  } else if (model.pages["/privacy"]) {
-    return <PrivacyComponent model={model.pages["/privacy"]} />;
-  } else if (model.pages["/about"]) {
-    return <AboutComponent model={model.pages["/about"]} />;
-  } else if (model.pages["/404"]) {
-    return <NotFoundComponent model={model.pages["/404"]} />;
+  } else if (model.location.pathname === "/pricing") {
+    return <PricingComponent model={model.page} />;
+  } else if (model.location.pathname === "/privacy") {
+    return <PrivacyComponent model={model.page} />;
+  } else if (model.location.pathname === "/about") {
+    return <AboutComponent model={model.page} />;
+  } else if (model.location.pathname === "/404") {
+    return <NotFoundComponent model={model.page} />;
   } else {
     return <div>Loading...</div>;
   }
@@ -43,7 +43,7 @@ const RenderContent = ({ model }) => {
 export default observer(({ model }) => {
   return (
     <Layout>
-      <Header model={model} showSlogan={!!model.pages["/"]} />
+      <Header model={model} showSlogan={model.location.pathname === "/"} />
       <Content style={{ background: "#fff" }}>
         <RenderContent model={model} />
       </Content>

@@ -1,7 +1,6 @@
 import {
   types,
   getEnv,
-  getParent,
   getSnapshot,
   onAction,
   applyAction,
@@ -38,22 +37,6 @@ const Location = types.model("Location", {
   search: types.string,
   hash: types.string
 });
-
-const Pages = types
-  .model("Pages", {
-    "/": types.maybe(IndexModel),
-    "/how": types.maybe(HowModel),
-    "/build": types.maybe(BuildModel),
-    "/pricing": types.maybe(PricingModel),
-    "/about": types.maybe(AboutModel),
-    "/privacy": types.maybe(PrivacyModel),
-    "/404": types.maybe(NotFoundModel)
-  })
-  .views(self => ({
-    get store() {
-      return getParent(self);
-    }
-  }));
 
 const routeRules = [
   {
@@ -105,7 +88,17 @@ const RootModel = types
     identity: types.maybe(Identity),
     config: Config,
     location: types.maybe(Location),
-    pages: types.optional(Pages, Pages.create()),
+    page: types.maybe(
+      types.union(
+        IndexModel,
+        HowModel,
+        BuildModel,
+        PricingModel,
+        AboutModel,
+        PrivacyModel,
+        NotFoundModel
+      )
+    ),
     lastAction: types.optional(types.frozen, null),
     numberOfRetries: types.optional(types.number, 0)
   })
@@ -120,7 +113,7 @@ const RootModel = types
 
     get base64State() {
       return encode(
-        JSON.stringify(omit(getSnapshot(self), "pages", "identity"))
+        JSON.stringify(omit(getSnapshot(self), "page", "identity"))
       );
     },
 
@@ -296,15 +289,11 @@ const RootModel = types
         const rule = findRoute(routeRules, newLocation);
 
         if (rule) {
-          self.pages = Pages.create({
-            [rule.pathname]: rule.setup(newLocation, self)
-          });
+          self.page = rule.setup(newLocation, self);
         } else {
           rootDebug("Unknown Path Name");
 
-          self.pages = Pages.create({
-            "/404": NotFoundModel.create()
-          });
+          self.page = NotFoundModel.create();
         }
 
         self.location = newLocation;

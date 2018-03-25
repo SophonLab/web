@@ -144,7 +144,7 @@ const BuildModel = types
   })
   .views(self => ({
     get store() {
-      return getParent(self).store;
+      return getParent(self);
     },
 
     get uploadUrl() {
