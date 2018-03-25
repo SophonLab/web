@@ -3,6 +3,7 @@ import { Button, Row, Col } from "antd";
 import styled from "styled-components";
 import { media } from "../../utils/css";
 import ProgressiveImage from "react-progressive-image";
+import LazyLoad from "react-lazyload";
 
 const BgImage = styled.img`
   width: 100%;
@@ -39,9 +40,11 @@ export default ({ model }) => (
   <div style={{ marginTop: "1em" }}>
     <Row>
       <Col span={24}>
-        <ProgressiveImage src="resolution-bg.jpg" placeholder="loader.gif">
-          {src => <BgImage alt="Resolution Background" src={src} />}
-        </ProgressiveImage>
+        <LazyLoad offset={100}>
+          <ProgressiveImage src="resolution-bg.jpg" placeholder="loader.gif">
+            {src => <BgImage alt="Resolution Background" src={src} />}
+          </ProgressiveImage>
+        </LazyLoad>
       </Col>
     </Row>
     <Row>
@@ -49,9 +52,11 @@ export default ({ model }) => (
         span={8}
         style={{ background: "#008000", borderRight: "4px solid #ececec" }}
       >
-        <ProgressiveImage src="resolution-1k.jpg" placeholder="loader.gif">
-          {src => <ZoomImage atl="1K" src={src} width="1176" height="350" />}
-        </ProgressiveImage>
+        <LazyLoad offset={100}>
+          <ProgressiveImage src="resolution-1k.jpg" placeholder="loader.gif">
+            {src => <ZoomImage atl="1K" src={src} width="1176" height="350" />}
+          </ProgressiveImage>
+        </LazyLoad>
         <CardHeader>1K</CardHeader>
         <CardBody>
           <p>Free!</p>
@@ -77,9 +82,11 @@ export default ({ model }) => (
           borderRight: "2px solid #ececec"
         }}
       >
-        <ProgressiveImage src="resolution-2k.jpg" placeholder="loader.gif">
-          {src => <ZoomImage alt="2K" src={src} />}
-        </ProgressiveImage>
+        <LazyLoad offset={100}>
+          <ProgressiveImage src="resolution-2k.jpg" placeholder="loader.gif">
+            {src => <ZoomImage alt="2K" src={src} />}
+          </ProgressiveImage>
+        </LazyLoad>
         <CardHeader>2K</CardHeader>
         <CardBody>
           <p>Contact Us</p>

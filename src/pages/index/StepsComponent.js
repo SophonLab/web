@@ -3,6 +3,7 @@ import { Row, Button, Badge, List } from "antd";
 import styled from "styled-components";
 import { media } from "../../utils/css";
 import ProgressiveImage from "react-progressive-image";
+import LazyLoad from "react-lazyload";
 
 const STEPS = [
   {
@@ -63,9 +64,11 @@ function Step({ seq, title, src, alt }) {
         {title}
       </Row>
       <Row>
-        <ProgressiveImage src={src} placeholder="loader.gif">
-          {source => <StepImage src={source} alt={alt} />}
-        </ProgressiveImage>
+        <LazyLoad offset={100}>
+          <ProgressiveImage src={src} placeholder="loader.gif">
+            {source => <StepImage src={source} alt={alt} />}
+          </ProgressiveImage>
+        </LazyLoad>
       </Row>
     </div>
   );

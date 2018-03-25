@@ -43,6 +43,7 @@
     "react": "^16.0.0",
     "react-dev-utils": "^5.0.0",
     "react-dom": "^16.0.0",
+    "react-lazyload": "^2.3.0",
     "react-medium-image-zoom": "^3.0.10",
     "react-progressive-image": "^0.3.0",
     "serve": "^6.4.9",
